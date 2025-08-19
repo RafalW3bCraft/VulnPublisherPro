@@ -7,6 +7,7 @@ Production-ready deployment with background automation
 import os
 import sys
 import logging
+import time
 from pathlib import Path
 
 # Add project root to path
@@ -30,11 +31,21 @@ class RenderDeployment:
         # Initialize components
         try:
             self.github_api = GitHubAPI()
+            
+            # Validate token and auto-detect username if needed
+            if not self.github_api.validate_token():
+                self.logger.error("GitHub token validation failed - check token permissions")
+                # Don't raise exception, but continue with limited functionality
+                self.logger.warning("Continuing with limited functionality")
+            
             self.automation_manager = AutomationManager(self.github_api)
             self.logger.info("Render deployment initialized successfully")
         except Exception as e:
             self.logger.error(f"Failed to initialize components: {e}")
-            raise
+            # Don't crash the deployment - log error and continue
+            self.logger.warning("Deployment continuing with potential limitations")
+            self.github_api = None
+            self.automation_manager = None
     
     def setup_logging(self):
         """Setup logging for production environment"""
@@ -77,6 +88,15 @@ class RenderDeployment:
         try:
             self.logger.info("Starting GitHub Repository Manager automation on Render")
             
+            # Check if automation manager is available
+            if not self.automation_manager:
+                self.logger.error("Automation manager not initialized - cannot start background automation")
+                # Keep the process alive but in error state
+                while True:
+                    time.sleep(60)
+                    self.logger.warning("Background process running in error state - check initialization")
+                return
+            
             # Start strategic automation in daemon mode
             result = self.automation_manager.start_strategic_automation(daemon=True)
             
@@ -85,11 +105,11 @@ class RenderDeployment:
                 
                 # Keep the process alive
                 import signal
-                import time
                 
                 def signal_handler(signum, frame):
                     self.logger.info("Received shutdown signal, stopping automation...")
-                    self.automation_manager.stop_automation()
+                    if self.automation_manager:
+                        self.automation_manager.stop_automation()
                     sys.exit(0)
                 
                 signal.signal(signal.SIGINT, signal_handler)
@@ -203,19 +223,38 @@ class RenderDeployment:
             @app.route('/api/status')
             def api_status():
                 try:
-                    status = self.automation_manager.get_comprehensive_status()
-                    return jsonify(status)
+                    if self.automation_manager:
+                        status = self.automation_manager.get_comprehensive_status()
+                        return jsonify(status)
+                    else:
+                        return jsonify({
+                            'status': 'error', 
+                            'message': 'Automation manager not initialized',
+                            'github_metrics': {
+                                'current_followers': 0,
+                                'current_following': 0,
+                                'ratio': 0
+                            },
+                            'statistics': {'success_rate': 0}
+                        })
                 except Exception as e:
-                    return jsonify({'status': 'error', 'message': str(e)}), 500
+                    return jsonify({
+                        'status': 'error', 
+                        'message': str(e),
+                        'github_metrics': {
+                            'current_followers': 0,
+                            'current_following': 0,
+                            'ratio': 0
+                        },
+                        'statistics': {'success_rate': 0}
+                    }), 500
             
             @app.route('/health')
             def health():
-                import time
-            return jsonify({'status': 'healthy', 'timestamp': time.time()})
+                return jsonify({'status': 'healthy', 'timestamp': time.time()})
             
             # Run Flask app
             port = int(os.environ.get('PORT', 5000))
-            import time
             app.run(host='0.0.0.0', port=port, debug=False)
         
         except Exception as e:

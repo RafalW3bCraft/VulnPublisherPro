@@ -142,7 +142,7 @@ class GitHubAPI:
             response = self.session.request(method, url, timeout=self.timeout, **kwargs)
             
             # Update rate limiter with response headers
-            self.rate_limiter.update_from_headers(response.headers)
+            self.rate_limiter.update_from_headers(dict(response.headers))
             
             # Handle rate limiting
             if response.status_code == 429:
@@ -175,6 +175,12 @@ class GitHubAPI:
     def get_followers(self, username: Optional[str] = None, per_page: int = 100) -> List[str]:
         """Get list of followers for a user"""
         username = username or self.username
+        
+        # Validate username before making API call
+        if not username:
+            self.logger.error("No username provided and self.username is not set. Call validate_token() first.")
+            return []
+        
         followers = []
         page = 1
         
@@ -184,7 +190,7 @@ class GitHubAPI:
                                             params={'per_page': per_page, 'page': page})
                 
                 if response.status_code != 200:
-                    self.logger.error(f"Failed to get followers: {response.status_code}")
+                    self.logger.error(f"Failed to get followers for {username}: {response.status_code}")
                     break
                 
                 data = response.json()
@@ -208,6 +214,12 @@ class GitHubAPI:
     def get_following(self, username: Optional[str] = None, per_page: int = 100) -> List[str]:
         """Get list of users being followed"""
         username = username or self.username
+        
+        # Validate username before making API call
+        if not username:
+            self.logger.error("No username provided and self.username is not set. Call validate_token() first.")
+            return []
+        
         following = []
         page = 1
         
@@ -217,7 +229,7 @@ class GitHubAPI:
                                             params={'per_page': per_page, 'page': page})
                 
                 if response.status_code != 200:
-                    self.logger.error(f"Failed to get following: {response.status_code}")
+                    self.logger.error(f"Failed to get following for {username}: {response.status_code}")
                     break
                 
                 data = response.json()

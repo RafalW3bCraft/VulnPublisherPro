@@ -255,7 +255,7 @@ class AutomationManager:
                 'message': f'Failed to get report: {e}'
             }
     
-    def export_automation_data(self, export_path: str = None) -> Dict:
+    def export_automation_data(self, export_path: Optional[str] = None) -> Dict:
         """Export all automation data for backup/analysis"""
         try:
             if not export_path:
