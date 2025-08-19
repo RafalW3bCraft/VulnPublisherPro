@@ -1,0 +1,68 @@
+services:
+  # Web Dashboard for Monitoring
+  - type: web
+    name: github-repository-manager-web
+    runtime: python3
+    buildCommand: "pip install -r deploy/requirements.txt"
+    startCommand: "python deploy/render_deployment.py"
+    envVars:
+      - key: DEPLOYMENT_MODE
+        value: web
+      - key: GITHUB_TOKEN
+        fromDatabase: false
+        value: # Set in Render dashboard - Required
+      - key: GITHUB_USERNAME
+        fromDatabase: false
+        value: # Set in Render dashboard - Optional (auto-detected)
+      - key: DATABASE_URL
+        fromDatabase: true
+        value: # Auto-populated by Render PostgreSQL
+      - key: AUTOMATION_CYCLE_INTERVAL
+        value: "3"  # Hours between automation cycles
+      - key: MAX_DAILY_FOLLOWS
+        value: "75"  # Maximum follows per day
+      - key: MAX_MOON_SYMBOLS
+        value: "3"   # Maximum moon symbols before blacklisting
+    autoDeploy: true
+    
+  # Background Automation Worker
+  - type: worker
+    name: github-repository-manager-automation
+    runtime: python3
+    buildCommand: "pip install -r deploy/requirements.txt"
+    startCommand: "python deploy/render_deployment.py"
+    envVars:
+      - key: DEPLOYMENT_MODE
+        value: background
+      - key: GITHUB_TOKEN
+        fromDatabase: false
+        value: # Set in Render dashboard - Required
+      - key: GITHUB_USERNAME
+        fromDatabase: false
+        value: # Set in Render dashboard - Optional (auto-detected)
+      - key: DATABASE_URL
+        fromDatabase: true
+        value: # Auto-populated by Render PostgreSQL
+      - key: AUTOMATION_CYCLE_INTERVAL
+        value: "3"  # Hours between automation cycles
+      - key: MAX_DAILY_FOLLOWS
+        value: "75"  # Maximum follows per day
+      - key: MAX_MOON_SYMBOLS
+        value: "3"   # Maximum moon symbols before blacklisting
+      - key: ENABLE_AUTO_RECOVERY
+        value: "true"  # Enable automatic error recovery
+      - key: LOG_LEVEL
+        value: "INFO"  # Logging level
+    autoDeploy: true
+
+databases:
+  - name: github-automation-db
+    region: us-west
+    plan: starter  # Upgraded from free for better performance
+    engine: postgresql
+    version: "15"
+    # Database will store:
+    # - Follow request tracking with timestamps
+    # - Moon symbol tracking and blacklist
+    # - Comprehensive automation logs
+    # - Performance statistics and analytics
