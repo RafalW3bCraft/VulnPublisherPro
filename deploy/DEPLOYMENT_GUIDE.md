@@ -142,7 +142,7 @@ The database will automatically create these tables on first run:
 2. **Build Process**:
    ```bash
    # Automatic build commands (from render.yaml)
-   pip install -r deploy/requirements.txt
+   pip install .
    python deploy/render_deployment.py
    ```
 

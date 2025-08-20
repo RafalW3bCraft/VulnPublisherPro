@@ -978,9 +978,22 @@ class AutomationScheduler:
     
     def get_scheduler_status(self) -> Dict:
         """Get current scheduler status"""
+        # Create JSON-safe version of schedules
+        safe_schedules = {}
+        for job_name, config in self.schedules.items():
+            safe_config = config.copy()
+            # Remove function reference for JSON serialization
+            if 'function' in safe_config:
+                safe_config['function_name'] = safe_config['function'].__name__
+                del safe_config['function']
+            # Convert last_run to string if it's a datetime
+            if safe_config.get('last_run'):
+                safe_config['last_run'] = str(safe_config['last_run'])
+            safe_schedules[job_name] = safe_config
+            
         return {
             'is_running': self.is_running,
-            'schedules': self.schedules,
+            'schedules': safe_schedules,
             'next_runs': {
                 job_name: str(schedule.next_run()) if schedule.next_run() else None
                 for job_name in self.schedules.keys()

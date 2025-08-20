@@ -3,8 +3,8 @@ services:
   - type: web
     name: github-repository-manager-web
     runtime: python3
-    buildCommand: "pip install -r deploy/requirements.txt"
-    startCommand: "python deploy/simple_start.py"
+    buildCommand: "pip install ."
+    startCommand: "python deploy/render_deployment.py"
     envVars:
       - key: DEPLOYMENT_MODE
         value: web
@@ -29,7 +29,7 @@ services:
   - type: worker
     name: github-repository-manager-automation
     runtime: python3
-    buildCommand: "pip install -r deploy/requirements.txt"
+    buildCommand: "pip install ."
     startCommand: "python deploy/render_deployment.py"
     envVars:
       - key: DEPLOYMENT_MODE

@@ -179,7 +179,7 @@ class AutomationManager:
                     'username': row[1],
                     'success': bool(row[2]),
                     'details': row[3],
-                    'timestamp': row[4]
+                    'timestamp': str(row[4]) if row[4] else None
                 })
             
             return activities
