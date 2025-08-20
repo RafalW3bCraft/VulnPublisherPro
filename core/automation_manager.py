@@ -111,9 +111,16 @@ class AutomationManager:
             
             # Get current GitHub metrics
             try:
-                current_followers = len(self.github_api.get_followers())
-                current_following = len(self.github_api.get_following())
-            except:
+                # Only attempt to get metrics if GitHub API has a valid username
+                if hasattr(self.github_api, 'username') and self.github_api.username:
+                    current_followers = len(self.github_api.get_followers())
+                    current_following = len(self.github_api.get_following())
+                else:
+                    self.logger.warning("GitHub username not available - cannot fetch follower metrics")
+                    current_followers = 0
+                    current_following = 0
+            except Exception as e:
+                self.logger.error(f"Failed to fetch GitHub metrics: {e}")
                 current_followers = 0
                 current_following = 0
             

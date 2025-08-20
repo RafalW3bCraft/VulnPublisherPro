@@ -35,11 +35,16 @@ class RenderDeployment:
             # Validate token and auto-detect username if needed
             if not self.github_api.validate_token():
                 self.logger.error("GitHub token validation failed - check token permissions")
-                # Don't raise exception, but continue with limited functionality
-                self.logger.warning("Continuing with limited functionality")
+                self.logger.error("Possible issues: Invalid token, missing scopes, or network connectivity")
+                # Don't initialize automation manager if GitHub API validation fails
+                self.automation_manager = None
+                self.github_api = None
+                return
             
+            # Only initialize automation manager if GitHub API is properly validated
             self.automation_manager = AutomationManager(self.github_api)
             self.logger.info("Render deployment initialized successfully")
+            
         except Exception as e:
             self.logger.error(f"Failed to initialize components: {e}")
             # Don't crash the deployment - log error and continue
@@ -182,8 +187,17 @@ class RenderDeployment:
                                 .then(response => response.json())
                                 .then(data => {
                                     const statusDiv = document.getElementById('status');
-                                    const statusClass = data.status === 'active' ? 'active' : 'stopped';
-                                    statusDiv.innerHTML = `<div class="status ${statusClass}">Status: ${data.status.toUpperCase()}</div>`;
+                                    let statusClass = 'stopped';
+                                    let statusText = data.status.toUpperCase();
+                                    
+                                    if (data.status === 'active') {
+                                        statusClass = 'active';
+                                    } else if (data.status === 'initialization_error' || data.status === 'error') {
+                                        statusClass = 'stopped';
+                                        statusText = data.message || statusText;
+                                    }
+                                    
+                                    statusDiv.innerHTML = `<div class="status ${statusClass}">Status: ${statusText}</div>`;
                                     
                                     const metricsDiv = document.getElementById('metrics');
                                     const metrics = data.github_metrics || {};
@@ -205,6 +219,28 @@ class RenderDeployment:
                                             <div class="metric-label">Success Rate</div>
                                         </div>
                                     `;
+                                    
+                                    // Show troubleshooting info if available
+                                    if (data.troubleshooting) {
+                                        const existingTrouble = document.getElementById('troubleshooting');
+                                        if (existingTrouble) existingTrouble.remove();
+                                        
+                                        const troubleDiv = document.createElement('div');
+                                        troubleDiv.id = 'troubleshooting';
+                                        troubleDiv.style.marginTop = '20px';
+                                        troubleDiv.style.padding = '15px';
+                                        troubleDiv.style.background = '#fff3cd';
+                                        troubleDiv.style.border = '1px solid #ffeaa7';
+                                        troubleDiv.style.borderRadius = '5px';
+                                        troubleDiv.innerHTML = `
+                                            <h4>Configuration Status:</h4>
+                                            <ul>
+                                                <li>GitHub Token: ${data.troubleshooting.token_set ? '✅ Set' : '❌ Missing'}</li>
+                                                <li>Required Scopes: ${data.troubleshooting.required_scopes.join(', ')}</li>
+                                            </ul>
+                                        `;
+                                        document.querySelector('.container').appendChild(troubleDiv);
+                                    }
                                 })
                                 .catch(error => {
                                     document.getElementById('status').innerHTML = '<div class="status stopped">Error loading status</div>';
@@ -221,13 +257,13 @@ class RenderDeployment:
             @app.route('/api/status')
             def api_status():
                 try:
-                    if self.automation_manager:
+                    if self.automation_manager and self.github_api:
                         status = self.automation_manager.get_comprehensive_status()
                         return jsonify(status)
-                    else:
+                    elif self.github_api and not self.automation_manager:
                         return jsonify({
-                            'status': 'error', 
-                            'message': 'Automation manager not initialized',
+                            'status': 'partial_initialization', 
+                            'message': 'GitHub API initialized but automation manager failed',
                             'github_metrics': {
                                 'current_followers': 0,
                                 'current_following': 0,
@@ -235,10 +271,32 @@ class RenderDeployment:
                             },
                             'statistics': {'success_rate': 0}
                         })
+                    else:
+                        # Determine specific error based on initialization state
+                        if not os.getenv('GITHUB_TOKEN'):
+                            error_msg = 'GITHUB_TOKEN environment variable not set'
+                        else:
+                            error_msg = 'GitHub token validation failed - check token permissions'
+                            
+                        return jsonify({
+                            'status': 'initialization_error', 
+                            'message': error_msg,
+                            'github_metrics': {
+                                'current_followers': 0,
+                                'current_following': 0,
+                                'ratio': 0
+                            },
+                            'statistics': {'success_rate': 0},
+                            'troubleshooting': {
+                                'token_set': bool(os.getenv('GITHUB_TOKEN')),
+                                'required_scopes': ['user:follow'],
+                                'recommended_scopes': ['repo']
+                            }
+                        })
                 except Exception as e:
                     return jsonify({
                         'status': 'error', 
-                        'message': str(e),
+                        'message': f'API status check failed: {str(e)}',
                         'github_metrics': {
                             'current_followers': 0,
                             'current_following': 0,
@@ -280,6 +338,7 @@ def main():
         print("Starting emergency fallback web server...")
         
         from flask import Flask, jsonify
+        import time
         
         app = Flask(__name__)
         
