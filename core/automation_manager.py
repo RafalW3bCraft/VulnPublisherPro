@@ -150,30 +150,28 @@ class AutomationManager:
     def _get_recent_activity(self, hours: int = 24) -> List[Dict]:
         """Get recent automation activity"""
         try:
-            cursor = self.database.connection.cursor()
-            
             from datetime import timedelta
             cutoff_time = datetime.now() - timedelta(hours=hours)
             
             if self.database.use_postgresql:
-                cursor.execute("""
+                result = self.database._execute_with_retry("""
                     SELECT action, username, success, details, timestamp
                     FROM automation_logs 
                     WHERE timestamp >= %s
                     ORDER BY timestamp DESC
                     LIMIT 50
-                """, (cutoff_time,))
+                """, (cutoff_time,), fetch='all')
             else:
-                cursor.execute("""
+                result = self.database._execute_with_retry("""
                     SELECT action, username, success, details, timestamp
                     FROM automation_logs 
                     WHERE timestamp >= ?
                     ORDER BY timestamp DESC
                     LIMIT 50
-                """, (cutoff_time,))
+                """, (cutoff_time,), fetch='all')
             
             activities = []
-            for row in cursor.fetchall():
+            for row in (result or []):
                 activities.append({
                     'action': row[0],
                     'username': row[1],
@@ -222,31 +220,29 @@ class AutomationManager:
     def get_damaged_users_report(self) -> Dict:
         """Get detailed report of damaged/blacklisted users"""
         try:
-            cursor = self.database.connection.cursor()
-            
             if self.database.use_postgresql:
-                cursor.execute("""
+                result = self.database._execute_with_retry("""
                     SELECT username, reason, retry_count, final_moon_symbols, blacklisted_date
                     FROM damaged_users
                     ORDER BY blacklisted_date DESC
                     LIMIT 100
-                """)
+                """, fetch='all')
             else:
-                cursor.execute("""
+                result = self.database._execute_with_retry("""
                     SELECT username, reason, retry_count, final_moon_symbols, blacklisted_date
                     FROM damaged_users
                     ORDER BY blacklisted_date DESC
                     LIMIT 100
-                """)
+                """, fetch='all')
             
             damaged_users = []
-            for row in cursor.fetchall():
+            for row in (result or []):
                 damaged_users.append({
                     'username': row[0],
                     'reason': row[1],
                     'retry_count': row[2],
                     'moon_symbols': row[3],
-                    'blacklisted_date': row[4]
+                    'blacklisted_date': str(row[4]) if row[4] else None
                 })
             
             return {
@@ -306,6 +302,7 @@ class AutomationManager:
     def cleanup_old_data(self, days_to_keep: int = 90) -> Dict:
         """Cleanup old automation data"""
         try:
+            self.database._ensure_connection()
             cursor = self.database.connection.cursor()
             
             from datetime import timedelta
