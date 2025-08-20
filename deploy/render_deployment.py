@@ -52,6 +52,26 @@ class RenderDeployment:
             self.github_api = None
             self.automation_manager = None
     
+    def _make_json_safe(self, obj):
+        """Recursively convert non-JSON serializable objects to safe formats"""
+        if isinstance(obj, dict):
+            return {k: self._make_json_safe(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [self._make_json_safe(item) for item in obj]
+        elif hasattr(obj, '__call__'):  # Function/method
+            return f"<function {obj.__name__}>"
+        elif hasattr(obj, 'isoformat'):  # datetime
+            return obj.isoformat()
+        elif hasattr(obj, '__dict__') and not isinstance(obj, (str, int, float, bool, type(None))):
+            return str(obj)
+        else:
+            try:
+                import json
+                json.dumps(obj)  # Test if serializable
+                return obj
+            except (TypeError, ValueError):
+                return str(obj)
+    
     def setup_logging(self):
         """Setup logging for production environment"""
         logging.basicConfig(
@@ -259,7 +279,9 @@ class RenderDeployment:
                 try:
                     if self.automation_manager and self.github_api:
                         status = self.automation_manager.get_comprehensive_status()
-                        return jsonify(status)
+                        # Ensure all data is JSON serializable
+                        safe_status = self._make_json_safe(status)
+                        return jsonify(safe_status)
                     elif self.github_api and not self.automation_manager:
                         return jsonify({
                             'status': 'partial_initialization', 
