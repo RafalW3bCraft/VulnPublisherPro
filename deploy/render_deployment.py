@@ -63,14 +63,11 @@ class RenderDeployment:
     
     def verify_environment(self):
         """Verify required environment variables"""
-        required_vars = [
-            'GITHUB_TOKEN',
-            'DATABASE_URL',
-            'GITHUB_USERNAME'  # Optional but recommended
-        ]
+        required_vars = ['GITHUB_TOKEN']
+        optional_vars = ['DATABASE_URL', 'GITHUB_USERNAME']
         
         missing_vars = []
-        for var in required_vars[:-1]:  # Skip GITHUB_USERNAME as it's optional
+        for var in required_vars:
             if not os.getenv(var):
                 missing_vars.append(var)
         
@@ -78,8 +75,9 @@ class RenderDeployment:
             raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
         
         # Warn about optional vars
-        if not os.getenv('GITHUB_USERNAME'):
-            self.logger.warning("GITHUB_USERNAME not set - will be auto-detected from token")
+        for var in optional_vars:
+            if not os.getenv(var):
+                self.logger.warning(f"{var} not set - using defaults or auto-detection")
         
         self.logger.info("Environment variables verified")
     
@@ -265,15 +263,70 @@ class RenderDeployment:
 
 def main():
     """Main entry point for Render deployment"""
-    deployment = RenderDeployment()
-    
-    # Check if we should run web interface or background automation
-    mode = os.environ.get('DEPLOYMENT_MODE', 'web')
-    
-    if mode == 'background':
-        deployment.run_background_automation()
-    else:
-        deployment.run_web_interface()
+    try:
+        deployment = RenderDeployment()
+        
+        # Check if we should run web interface or background automation
+        mode = os.environ.get('DEPLOYMENT_MODE', 'web')
+        
+        if mode == 'background':
+            deployment.run_background_automation()
+        else:
+            deployment.run_web_interface()
+            
+    except Exception as e:
+        # Emergency fallback - start a minimal web server to prevent Bad Gateway
+        print(f"CRITICAL ERROR: Deployment failed: {e}")
+        print("Starting emergency fallback web server...")
+        
+        from flask import Flask, jsonify
+        
+        app = Flask(__name__)
+        
+        @app.route('/')
+        def emergency_status():
+            return f"""
+            <html>
+            <head><title>GitHub Repository Manager - Startup Error</title></head>
+            <body style="font-family: Arial; padding: 20px; background: #ffebee;">
+                <h1 style="color: #c62828;">🚨 Deployment Error</h1>
+                <p><strong>Error:</strong> {str(e)}</p>
+                <p><strong>Status:</strong> Service failed to initialize properly</p>
+                <p><strong>Action Required:</strong> Check environment variables and GitHub token</p>
+                <hr>
+                <h3>Troubleshooting Steps:</h3>
+                <ol>
+                    <li>Verify GITHUB_TOKEN is set correctly</li>
+                    <li>Check token has required permissions</li>
+                    <li>Ensure DATABASE_URL is accessible</li>
+                    <li>Review build logs for specific errors</li>
+                </ol>
+                <p><em>Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S UTC')}</em></p>
+            </body>
+            </html>
+            """
+        
+        @app.route('/health')
+        def emergency_health():
+            return jsonify({
+                'status': 'error', 
+                'message': 'Deployment failed - emergency mode',
+                'timestamp': time.time()
+            })
+        
+        @app.route('/api/status')
+        def emergency_api():
+            return jsonify({
+                'status': 'error',
+                'message': f'Deployment initialization failed: {str(e)}',
+                'github_metrics': {'current_followers': 0, 'current_following': 0, 'ratio': 0},
+                'statistics': {'success_rate': 0}
+            })
+        
+        # Start emergency server on port 5000
+        port = int(os.environ.get('PORT', 5000))
+        print(f"Emergency server starting on port {port}")
+        app.run(host='0.0.0.0', port=port, debug=False)
 
 
 if __name__ == "__main__":
