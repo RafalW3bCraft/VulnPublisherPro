@@ -13,17 +13,12 @@ A comprehensive Python CLI tool that automates vulnerability intelligence collec
 - **Automated Scheduling**: Background task scheduling for continuous operation
 - **Database Management**: PostgreSQL support with automated backup and cleanup
 
-<<<<<<< refs/remotes/origin/master
 ### 🤖 AI Integration
 - **Auto Categorizer** - ✅ Automatic vulnerability classification
 - **Expert Simulator** - ✅ Expert interview generation
 - **Content Generator** - ✅ AI-powered content creation
 - **Blog Engine** - ✅ Professional blog post generation
 
-## 🚀 SYSTEM CAPABILITIES
-=======
-## 🏗️ Architecture
->>>>>>> local
 
 ### Core Components
 
