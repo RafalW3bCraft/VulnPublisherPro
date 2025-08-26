@@ -32,12 +32,6 @@
 12. **Slack** - Team communication
 13. **Microsoft Teams** - Enterprise communication
 
-### 🤖 AI Integration
-- **Auto Categorizer** - ✅ Automatic vulnerability classification
-- **Expert Simulator** - ✅ Expert interview generation
-- **Content Generator** - ✅ AI-powered content creation
-- **Blog Engine** - ✅ Professional blog post generation
-
 ## 🚀 SYSTEM CAPABILITIES
 
 ### Current Operational Features
