@@ -1,17 +1,6 @@
 # 🛡️ VulnPublisherPro 
 
-## 📊 SYSTEM METRICS
-
-| Component | Status | Details |
-|-----------|--------|---------|
-| **Database Connectivity** | ✅ Active | PostgreSQL connected and operational |
-| **Scraper Modules** | ✅ 13/13 Working | NVD, CISA KEV, GitHub, HackerOne, ExploitDB, etc. |
-| **Publisher Modules** | ✅ 13/13 Ready | Twitter, LinkedIn, Discord, Telegram, Medium, etc. |
-| **AI Integration** | ✅ Operational | Auto-categorizer, Expert simulator, Content generator |
-| **Configuration** | ✅ Configured | Database URL ✅, OpenAI API ✅ |
-| **CLI Interface** | ✅ Enhanced | Modern Rich-based UI with global standards |
-
-## ✅ WORKING COMPONENTS
+## ✅ COMPONENTS
 
 ### 🔍 Scrapers (13 Total)
 1. **NVD (NIST)** - Official vulnerability database
