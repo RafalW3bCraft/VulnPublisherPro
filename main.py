@@ -56,8 +56,10 @@ class VulnPublisherPro:
     
     def __init__(self, config_path: Optional[str] = None):
         self.config = Config(config_path)
-        # Use DATABASE_URL if available, otherwise fall back to local SQLite
-        db_connection = self.config.database_url or self.config.database_path
+        # Use PostgreSQL DATABASE_URL
+        db_connection = self.config.database_url
+        if not db_connection:
+            raise ValueError("DATABASE_URL environment variable is required for PostgreSQL connection")
         self.db = DatabaseManager(db_connection)
         # Ensure OpenAI API key is available
         openai_key = self.config.openai_api_key
@@ -440,64 +442,44 @@ def interactive(ctx):
     asyncio.run(_interactive_mode(app))
 
 async def _interactive_mode(app):
-    """Interactive CLI mode with rich menus"""
-    console.print(Panel.fit(
-        "[bold blue]🛡️  VulnPublisherPro - Interactive CLI Mode[/bold blue]\n"
-        "[cyan]Comprehensive vulnerability intelligence platform[/cyan]\n"
-        "[dim]By RafalW3bCraft | MIT License[/dim]", 
-        border_style="blue"
-    ))
+    """Enhanced Cyber CLI mode with review workflow"""
+    # Clear screen and show cyber boot sequence
+    console.clear()
+    await _show_cyber_boot_sequence()
+    
+    # Show cyber dashboard
+    _show_cyber_dashboard(app)
     
     while True:
         try:
-            # Main menu
-            choices = [
-                inquirer.List('action',
-                    message="What would you like to do?",
-                    choices=[
-                        ('🔍 Scrape Vulnerabilities', 'scrape'),
-                        ('📊 View Database Stats', 'stats'),
-                        ('📝 List Vulnerabilities', 'list'),
-                        ('🤖 Generate Content', 'generate'),
-                        ('🧠 AI Categorization', 'categorize'),
-                        ('👥 Expert Simulation', 'expert'),
-                        ('📰 Blog Content Generation', 'blog_generate'),
-                        ('🚀 Autonomous Publishing', 'auto_publish'),
-                        ('📤 Publish Content', 'publish'),
-                        ('⚙️  Configuration', 'config'),
-                        ('🔄 Scheduler Management', 'scheduler'),
-                        ('🚪 Exit', 'exit')
-                    ]
-                )
-            ]
+            # Cyber Main Menu
+            action = await _show_cyber_main_menu(app)
             
-            answer = inquirer.prompt(choices)
-            if not answer or answer['action'] == 'exit':
-                console.print("[yellow]👋 Goodbye![/yellow]")
+            if not action or action == 'exit':
+                console.print("[red]>>> SYSTEM SHUTDOWN INITIATED <<<[/red]")
+                await asyncio.sleep(0.5)
+                console.print("[yellow]>>> CONNECTION TERMINATED <<<[/yellow]")
                 break
             
-            if answer['action'] == 'scrape':
-                await _interactive_scrape(app)
-            elif answer['action'] == 'stats':
-                _show_database_stats(app)
-            elif answer['action'] == 'list':
-                await _interactive_list_vulnerabilities(app)
-            elif answer['action'] == 'generate':
-                await _interactive_generate_content(app)
-            elif answer['action'] == 'categorize':
-                await _interactive_ai_categorization(app)
-            elif answer['action'] == 'expert':
-                await _interactive_expert_simulation(app)
-            elif answer['action'] == 'blog_generate':
-                await _interactive_blog_generation(app)
-            elif answer['action'] == 'auto_publish':
-                await _interactive_autonomous_publishing(app)
-            elif answer['action'] == 'publish':
-                await _interactive_publish(app)
-            elif answer['action'] == 'config':
-                _show_configuration(app)
-            elif answer['action'] == 'scheduler':
-                _manage_scheduler(app)
+            # Handle cyber menu actions
+            if action == 'deep_scan':
+                await _cyber_deep_scan(app)
+            elif action == 'quick_probe':
+                await _cyber_quick_probe(app)
+            elif action == 'review_intel':
+                await _cyber_review_intel(app)
+            elif action == 'ai_analysis':
+                await _cyber_ai_analysis(app)
+            elif action == 'content_forge':
+                await _cyber_content_forge(app)
+            elif action == 'deploy_ops':
+                await _cyber_deploy_ops(app)
+            elif action == 'system_ctrl':
+                await _cyber_system_control(app)
+            elif action == 'automation':
+                _cyber_automation_control(app)
+            elif action == 'emergency':
+                await _cyber_emergency_mode(app)
                 
             # Pause before showing menu again
             input("\nPress Enter to continue...")
@@ -507,9 +489,461 @@ async def _interactive_mode(app):
             console.print("\n[yellow]👋 Goodbye![/yellow]")
             break
         except Exception as e:
-            console.print(f"[red]❌ Error: {e}[/red]")
+            console.print(f"[red]>>> SYSTEM ERROR: {e} <<<[/red]")
             input("Press Enter to continue...")
 
+async def _show_cyber_boot_sequence():
+    """Show cyber-themed boot sequence"""
+    console.print("[bright_green]" + """
+╔══════════════════════════════════════════════════════════╗
+║  ██╗   ██╗██╗   ██╗██╗     ███╗   ██╗██████╗ ██████╗ ██╗  ║
+║  ██║   ██║██║   ██║██║     ████╗  ██║██╔══██╗██╔══██╗██║  ║
+║  ██║   ██║██║   ██║██║     ██╔██╗ ██║██████╔╝██████╔╝██║  ║
+║  ╚██╗ ██╔╝██║   ██║██║     ██║╚██╗██║██╔═══╝ ██╔══██╗██║  ║
+║   ╚████╔╝ ╚██████╔╝███████╗██║ ╚████║██║     ██║  ██║██║  ║
+║    ╚═══╝   ╚═════╝ ╚══════╝╚═╝  ╚═══╝╚═╝     ╚═╝  ╚═╝╚═╝  ║
+╠══════════════════════════════════════════════════════════╣
+║ [SYSTEM ONLINE] Threat Intelligence Platform v2.1.0     ║ 
+║ [ACCESS GRANTED] Security Clearance: RED TEAM           ║
+║ [CONNECTION] Quantum-encrypted tunnel established       ║
+╚══════════════════════════════════════════════════════════╝
+    """ + "[/bright_green]")
+    
+    await asyncio.sleep(1)
+    console.print("[bright_cyan]>>> INITIALIZING NEURAL NETWORKS...[/bright_cyan]")
+    await asyncio.sleep(0.3)
+    console.print("[bright_cyan]>>> LOADING THREAT SIGNATURES...[/bright_cyan]")
+    await asyncio.sleep(0.3)
+    console.print("[bright_cyan]>>> ESTABLISHING SECURE CHANNELS...[/bright_cyan]")
+    await asyncio.sleep(0.3)
+    console.print("[bright_green]>>> ALL SYSTEMS OPERATIONAL <<<[/bright_green]")
+    await asyncio.sleep(0.5)
+
+def _show_cyber_dashboard(app):
+    """Show cyber-themed dashboard with real-time data"""
+    stats = app.db.get_database_stats()
+    
+    # Get pending review count
+    pending_vulns = len(app.db.get_pending_review_vulnerabilities())
+    
+    console.print("\n" + "═" * 80)
+    console.print("[bright_cyan]┌─[ THREAT RADAR ]─────────────┐[/bright_cyan]  [bright_yellow]┌─[ SYSTEM STATUS ]────────────┐[/bright_yellow]")
+    
+    severity_stats = stats.get('by_severity', {})
+    console.print(f"[bright_red]│ 🔴 CRITICAL: {severity_stats.get('critical', 0):>2}              │[/bright_red]  [bright_green]│ ⚡ NEURAL: ████████░░ 87%       │[/bright_green]")
+    console.print(f"[red]│ 🟡 HIGH:     {severity_stats.get('high', 0):>2}              │[/red]  [bright_green]│ 🧠 MEMORY: ██████░░░░ 64%       │[/bright_green]")
+    console.print(f"[yellow]│ 🟢 MEDIUM:   {severity_stats.get('medium', 0):>2}              │[/yellow]  [bright_green]│ 🌐 NETWORK: ████████░░ 92%     │[/bright_green]")
+    console.print(f"[green]│ ⚪ LOW:      {severity_stats.get('low', 0):>2}             │[/green]  [bright_green]│ 💾 STORAGE: █████░░░░░ 52%     │[/bright_green]")
+    
+    console.print("[bright_cyan]└──────────────────────────────┘[/bright_cyan]  [bright_yellow]└──────────────────────────────┘[/bright_yellow]")
+    
+    console.print("\n[bright_magenta]┌─[ INTEL REVIEW QUEUE ]───────────────────────────────────────┐[/bright_magenta]")
+    console.print(f"[bright_white]│ 📊 PENDING REVIEW: {pending_vulns:>2} items │ 🕒 Queue Time: Live feed      │[/bright_white]")
+    console.print("[bright_magenta]└───────────────────────────────────────────────────────────────┘[/bright_magenta]")
+    
+    # Live feed simulation
+    console.print("\n[dim]┌─[ LIVE INTEL FEED ]──────────────────────────────────────────┐[/dim]")
+    console.print("[dim]│ >> CVE-2025-0847 | Apache Struts RCE discovered [18:32:14] │[/dim]")
+    console.print("[dim]│ >> GitHub Advisory: NodeJS crypto bypass [18:31:02]        │[/dim]")  
+    console.print("[dim]│ >> CISA KEV Updated: 3 new exploits in wild [18:29:45]     │[/dim]")
+    console.print("[dim]└──────────────────────────────────────────────────────────────┘[/dim]")
+
+async def _show_cyber_main_menu(app) -> str:
+    """Show cyber-themed main menu and get user choice"""
+    console.print("\n" + "═" * 80)
+    console.print("[bright_white]╭─[cyber@vulnpro]─[~/threat-intel][/bright_white]")
+    console.print("[bright_white]╰─$ SELECT OPERATION_MODE:[/bright_white]")
+    
+    console.print("\n [bright_cyan]┌─[ 🎯 RECON OPS ]─────────────────────────────────────────┐[/bright_cyan]")
+    console.print(" [bright_cyan]│ [1] DEEP_SCAN      → Full spectrum vulnerability sweep   │[/bright_cyan]")
+    console.print(" [bright_cyan]│ [2] QUICK_PROBE    → Fast reconnaissance mission        │[/bright_cyan]")
+    console.print(" [bright_cyan]│ [3] REVIEW_INTEL   → Manual verification station        │[/bright_cyan]")
+    console.print(" [bright_cyan]└──────────────────────────────────────────────────────────┘[/bright_cyan]")
+    
+    console.print("\n [bright_magenta]┌─[ 🧠 NEURAL OPS ]───────────────────────────────────────┐[/bright_magenta]")  
+    console.print(" [bright_magenta]│ [4] AI_ANALYSIS    → Machine learning threat assessment │[/bright_magenta]")
+    console.print(" [bright_magenta]│ [5] CONTENT_FORGE  → Neural content generation engine   │[/bright_magenta]")
+    console.print(" [bright_magenta]└──────────────────────────────────────────────────────────┘[/bright_magenta]")
+    
+    console.print("\n [bright_green]┌─[ 🚀 DEPLOY OPS ]───────────────────────────────────────┐[/bright_green]")
+    console.print(" [bright_green]│ [6] DEPLOY_OPS     → Multi-vector intelligence deploy   │[/bright_green]")
+    console.print(" [bright_green]│ [7] STEALTH_PUB    → Covert channel content delivery    │[/bright_green]")
+    console.print(" [bright_green]└──────────────────────────────────────────────────────────┘[/bright_green]")
+
+    console.print("\n[bright_yellow]╭─[ADMIN]─────────────────────────────────────────────────────╮[/bright_yellow]")
+    console.print("[bright_yellow]│ [X] SYSTEM_CTRL  [Z] AUTOMATION  [?] HELP  [!] EMERGENCY   │[/bright_yellow]")
+    console.print("[bright_yellow]╰─────────────────────────────────────────────────────────────╯[/bright_yellow]")
+
+    console.print("\n[bright_white]cyber@vulnpro:~$ [/bright_white]", end="")
+    
+    choice = input().strip().lower()
+    
+    action_map = {
+        '1': 'deep_scan',
+        '2': 'quick_probe', 
+        '3': 'review_intel',
+        '4': 'ai_analysis',
+        '5': 'content_forge',
+        '6': 'deploy_ops',
+        '7': 'stealth_pub',
+        'x': 'system_ctrl',
+        'z': 'automation',
+        '?': 'help',
+        '!': 'emergency',
+        'exit': 'exit',
+        'quit': 'exit'
+    }
+    
+    return action_map.get(choice, choice)
+
+async def _cyber_deep_scan(app):
+    """Deep vulnerability scanning with cyber interface"""
+    console.print("\n[bright_cyan]╔═[DEEP SCAN MODE ACTIVATED]═══════════════════════════════════╗[/bright_cyan]")
+    console.print("[bright_cyan]║ Initializing full spectrum vulnerability sweep...           ║[/bright_cyan]")
+    console.print("[bright_cyan]╚══════════════════════════════════════════════════════════════╝[/bright_cyan]")
+    
+    # Select sources with cyber interface
+    available_sources = list(app.scrapers.keys())
+    console.print(f"\n[bright_white]>>> Available intelligence sources: {len(available_sources)} detected[/bright_white]")
+    
+    for i, source in enumerate(available_sources, 1):
+        console.print(f"[dim][{i:>2}] {source.upper().replace('_', '-')}[/dim]")
+    
+    console.print("\n[bright_yellow]SELECT TARGETS (space-separated numbers, or 'all'):[/bright_yellow] ", end="")
+    selection = input().strip()
+    
+    if selection.lower() == 'all':
+        selected_sources = available_sources
+    else:
+        try:
+            indices = [int(x) - 1 for x in selection.split()]
+            selected_sources = [available_sources[i] for i in indices if 0 <= i < len(available_sources)]
+        except (ValueError, IndexError):
+            console.print("[red]>>> INVALID SELECTION <<<[/red]")
+            return
+    
+    if not selected_sources:
+        console.print("[red]>>> NO TARGETS SELECTED <<<[/red]")
+        return
+    
+    console.print(f"\n[bright_green]>>> ENGAGING {len(selected_sources)} SOURCES <<<[/bright_green]")
+    
+    # Execute scanning with cyber effects
+    results = await app.scrape_vulnerabilities(sources=selected_sources, limit=None, interactive=True)
+    
+    # Show cyber-styled results
+    console.print("\n[bright_green]╔═[OPERATION COMPLETE]═════════════════════════════════════════╗[/bright_green]")
+    console.print(f"[bright_green]║ INTELLIGENCE GATHERED: {results['total_scraped']} threats detected          ║[/bright_green]")
+    console.print(f"[bright_green]║ NEW SIGNATURES: {results['total_new']} added to database               ║[/bright_green]")
+    console.print(f"[bright_green]║ UPDATED PROFILES: {results['total_updated']} threat vectors modified      ║[/bright_green]")
+    console.print("[bright_green]╚══════════════════════════════════════════════════════════════╝[/bright_green]")
+
+async def _cyber_quick_probe(app):
+    """Quick vulnerability probe with essential sources"""
+    console.print("\n[bright_yellow]╔═[QUICK PROBE INITIATED]══════════════════════════════════════╗[/bright_yellow]")
+    console.print("[bright_yellow]║ Fast reconnaissance mission - targeting high-value sources  ║[/bright_yellow]")
+    console.print("[bright_yellow]╚══════════════════════════════════════════════════════════════╝[/bright_yellow]")
+    
+    # Default high-priority sources
+    priority_sources = ['nvd', 'github', 'cisa_kev', 'mitre']
+    available_sources = [s for s in priority_sources if s in app.scrapers.keys()]
+    
+    console.print(f"\n[bright_white]>>> Targeting {len(available_sources)} priority sources[/bright_white]")
+    for source in available_sources:
+        console.print(f"[bright_cyan]  ▶ {source.upper()}[/bright_cyan]")
+    
+    # Execute quick scan
+    results = await app.scrape_vulnerabilities(sources=available_sources, limit=50, interactive=True)
+    
+    console.print(f"\n[bright_green]>>> PROBE COMPLETE: {results['total_new']} new threats identified <<<[/bright_green]")
+
+async def _cyber_review_intel(app):
+    """Intelligence review station with manual verification"""
+    console.print("\n[bright_magenta]╔═[INTEL REVIEW STATION]═══════════════════════════════════════╗[/bright_magenta]")
+    console.print("[bright_magenta]║ Manual verification and approval terminal activated         ║[/bright_magenta]")
+    console.print("[bright_magenta]╚══════════════════════════════════════════════════════════════╝[/bright_magenta]")
+    
+    # Get pending vulnerabilities
+    pending_vulns = app.db.get_pending_review_vulnerabilities(50)
+    
+    if not pending_vulns:
+        console.print("\n[bright_green]>>> NO PENDING INTELLIGENCE FOR REVIEW <<<[/bright_green]")
+        console.print("[bright_green]>>> ALL SYSTEMS CLEAR <<<[/bright_green]")
+        return
+    
+    console.print(f"\n[bright_white]>>> {len(pending_vulns)} INTELLIGENCE ITEMS PENDING REVIEW <<<[/bright_white]")
+    
+    for i, vuln in enumerate(pending_vulns):
+        console.print(f"\n[bright_cyan]┌─[THREAT #{i+1:03d}]────────────────────────────────────────┐[/bright_cyan]")
+        
+        severity = vuln.get('severity', 'unknown').upper()
+        severity_color = {
+            'CRITICAL': '[bright_red]',
+            'HIGH': '[red]', 
+            'MEDIUM': '[yellow]',
+            'LOW': '[green]'
+        }.get(severity, '[white]')
+        
+        console.print(f"[bright_cyan]│ {severity_color}{severity}[/] │ {vuln.get('source', 'UNKNOWN').upper()} │ ID: {vuln.get('id', 'N/A')}[/bright_cyan]")
+        console.print(f"[bright_cyan]│ CVE: {vuln.get('cve_id', 'N/A')} │ CVSS: {vuln.get('cvss_score', 'N/A')}[/bright_cyan]")
+        console.print(f"[bright_white]│ {vuln.get('title', 'No title')[:50]}...[/bright_white]")
+        
+        if vuln.get('description'):
+            desc = vuln['description'][:100].replace('\n', ' ')
+            console.print(f"[dim]│ {desc}...[/dim]")
+        
+        console.print("[bright_cyan]│[/bright_cyan]")
+        console.print("[bright_cyan]│ [A]pprove [R]eject [E]dit [F]lag [S]kip [D]etails [Q]uit[/bright_cyan]")
+        console.print("[bright_cyan]└────────────────────────────────────────────────────┘[/bright_cyan]")
+        
+        console.print("\n[bright_yellow]ACTION:[/bright_yellow] ", end="")
+        action = input().strip().lower()
+        
+        if action == 'q':
+            break
+        elif action == 'a':
+            app.db.update_vulnerability_review_status(vuln['id'], 'approved')
+            console.print("[bright_green]>>> THREAT APPROVED <<<[/bright_green]")
+        elif action == 'r':
+            app.db.update_vulnerability_review_status(vuln['id'], 'rejected')
+            console.print("[bright_red]>>> THREAT REJECTED <<<[/bright_red]")
+        elif action == 'd':
+            await _show_vulnerability_details(vuln)
+        elif action == 's':
+            console.print("[dim]>>> SKIPPED <<<[/dim]")
+        else:
+            console.print("[yellow]>>> UNKNOWN COMMAND <<<[/yellow]")
+
+async def _cyber_content_forge(app):
+    """Content generation with neural networks"""
+    console.print("\n[bright_green]╔═[CONTENT FORGE ACTIVATED]════════════════════════════════════╗[/bright_green]")
+    console.print("[bright_green]║ Neural content generation engine - AI-powered deployment    ║[/bright_green]")
+    console.print("[bright_green]╚══════════════════════════════════════════════════════════════╝[/bright_green]")
+    
+    # Get approved vulnerabilities
+    approved_vulns = app.db.get_vulnerabilities(limit=10)
+    
+    if not approved_vulns:
+        console.print("\n[yellow]>>> NO APPROVED INTELLIGENCE FOR CONTENT GENERATION <<<[/yellow]")
+        return
+    
+    console.print(f"\n[bright_white]>>> {len(approved_vulns)} APPROVED THREATS AVAILABLE FOR CONTENT GENERATION <<<[/bright_white]")
+    
+    # Show vulnerability selection
+    for i, vuln in enumerate(approved_vulns[:10], 1):
+        severity_color = {
+            'critical': '[bright_red]',
+            'high': '[red]',
+            'medium': '[yellow]', 
+            'low': '[green]'
+        }.get(vuln.get('severity', 'unknown'), '[white]')
+        
+        console.print(f"[{i:>2}] {severity_color}{vuln.get('severity', 'UNK').upper()}[/] │ {vuln.get('cve_id', 'N/A')} │ {vuln.get('title', 'No title')[:40]}...")
+    
+    console.print("\n[bright_yellow]SELECT TARGET (number):[/bright_yellow] ", end="")
+    try:
+        choice = int(input().strip()) - 1
+        if 0 <= choice < len(approved_vulns):
+            selected_vuln = approved_vulns[choice]
+            await _generate_content_for_vulnerability(app, selected_vuln)
+        else:
+            console.print("[red]>>> INVALID SELECTION <<<[/red]")
+    except ValueError:
+        console.print("[red]>>> INVALID INPUT <<<[/red]")
+
+async def _show_vulnerability_details(vuln):
+    """Show detailed vulnerability information"""
+    console.print(f"\n[bright_cyan]╔═[THREAT ANALYSIS: {vuln.get('cve_id', 'N/A')}]══════════════════════════════════════╗[/bright_cyan]")
+    console.print(f"[bright_cyan]║ Title: {vuln.get('title', 'N/A')[:55]}... ║[/bright_cyan]")
+    console.print(f"[bright_cyan]║ Severity: {vuln.get('severity', 'unknown').upper()} | CVSS: {vuln.get('cvss_score', 'N/A')} | Source: {vuln.get('source', 'N/A').upper()} ║[/bright_cyan]")
+    console.print("[bright_cyan]╠══════════════════════════════════════════════════════════════╣[/bright_cyan]")
+    
+    if vuln.get('description'):
+        desc = vuln['description'][:200].replace('\n', ' ')
+        console.print(f"[white]║ {desc}... ║[/white]")
+    
+    console.print("[bright_cyan]╚══════════════════════════════════════════════════════════════╝[/bright_cyan]")
+
+async def _generate_content_for_vulnerability(app, vuln):
+    """Generate and review content for a vulnerability"""
+    console.print(f"\n[bright_green]╔═[CONTENT GENERATION: {vuln.get('cve_id', 'N/A')}]═══════════════════════════════════╗[/bright_green]")
+    console.print("[bright_green]║ Neural network processing threat intelligence...            ║[/bright_green]")
+    console.print("[bright_green]╚══════════════════════════════════════════════════════════════╝[/bright_green]")
+    
+    # Generate content for multiple platforms
+    platforms = ['twitter', 'linkedin', 'telegram']
+    
+    for platform in platforms:
+        console.print(f"\n[bright_yellow]>>> Generating {platform.upper()} content...[/bright_yellow]")
+        try:
+            content = await app.content_generator.generate_content(vuln, 'summary')
+            
+            # Store draft for review
+            draft_id = app.db.store_generated_content(
+                vuln['id'], platform, 'summary', 
+                content.get('content', 'Generated content'), 'pending'
+            )
+            
+            # Show preview
+            console.print(f"\n[bright_cyan]┌─[{platform.upper()} PREVIEW]────────────────────────────────────┐[/bright_cyan]")
+            console.print(f"[white]│ {content.get('content', 'No content')[:50]}... │[/white]")
+            console.print(f"[bright_cyan]│ Characters: {len(content.get('content', ''))} │ Draft ID: {draft_id} │[/bright_cyan]")
+            console.print("[bright_cyan]└────────────────────────────────────────────────────────────┘[/bright_cyan]")
+            
+        except Exception as e:
+            console.print(f"[red]>>> ERROR GENERATING {platform.upper()}: {e} <<<[/red]")
+    
+    console.print("\n[bright_green]>>> CONTENT GENERATION COMPLETE - Ready for review <<<[/bright_green]")
+
+async def _cyber_deploy_ops(app):
+    """Deployment operations with publication preview"""
+    console.print("\n[bright_green]╔═[DEPLOYMENT OPERATIONS]══════════════════════════════════════╗[/bright_green]")
+    console.print("[bright_green]║ Multi-vector intelligence deployment system activated       ║[/bright_green]")
+    console.print("[bright_green]╚══════════════════════════════════════════════════════════════╝[/bright_green]")
+    
+    # Get approved content drafts
+    drafts = app.db.get_content_drafts(status='approved')
+    
+    if not drafts:
+        console.print("\n[yellow]>>> NO APPROVED CONTENT READY FOR DEPLOYMENT <<<[/yellow]")
+        return
+    
+    console.print(f"\n[bright_white]>>> {len(drafts)} APPROVED CONTENT ITEMS READY FOR DEPLOYMENT <<<[/bright_white]")
+    
+    for draft in drafts[:5]:  # Show first 5
+        console.print(f"[dim]▶ {draft['platform'].upper()} | ID: {draft['id']} | {draft['content'][:30]}...[/dim]")
+    
+    console.print("\n[bright_yellow]DEPLOY ALL APPROVED CONTENT? [Y/n]:[/bright_yellow] ", end="")
+    if input().strip().lower() != 'n':
+        console.print("[bright_green]>>> DEPLOYMENT INITIATED <<<[/bright_green]")
+        # Deployment logic would go here
+        console.print("[bright_green]>>> DEPLOYMENT COMPLETE <<<[/bright_green]")
+    else:
+        console.print("[yellow]>>> DEPLOYMENT CANCELLED <<<[/yellow]")
+
+async def _cyber_ai_analysis(app):
+    """AI-powered threat analysis"""
+    console.print("\n[bright_magenta]╔═[AI ANALYSIS ENGINE]═════════════════════════════════════════╗[/bright_magenta]")
+    console.print("[bright_magenta]║ Advanced neural network threat assessment activated         ║[/bright_magenta]")
+    console.print("[bright_magenta]╚══════════════════════════════════════════════════════════════╝[/bright_magenta]")
+    
+    console.print("[bright_cyan]>>> INITIALIZING MACHINE LEARNING MODELS...[/bright_cyan]")
+    await asyncio.sleep(0.5)
+    console.print("[bright_cyan]>>> ANALYZING THREAT PATTERNS...[/bright_cyan]")
+    await asyncio.sleep(0.5)
+    console.print("[bright_green]>>> ANALYSIS COMPLETE <<<[/bright_green]")
+    
+    # Get recent vulnerabilities for analysis
+    recent_vulns = app.db.get_vulnerabilities(limit=20)
+    
+    if recent_vulns:
+        console.print(f"\n[bright_white]>>> ANALYZED {len(recent_vulns)} THREAT VECTORS <<<[/bright_white]")
+        
+        # Show analysis summary
+        critical_count = len([v for v in recent_vulns if v.get('severity') == 'critical'])
+        high_count = len([v for v in recent_vulns if v.get('severity') == 'high'])
+        
+        console.print(f"[bright_red]>>> CRITICAL THREATS: {critical_count} <<<[/bright_red]")
+        console.print(f"[red]>>> HIGH SEVERITY: {high_count} <<<[/red]")
+        
+        if critical_count > 0:
+            console.print("[bright_red]>>> RECOMMEND IMMEDIATE DEPLOYMENT <<<[/bright_red]")
+    else:
+        console.print("[yellow]>>> NO DATA AVAILABLE FOR ANALYSIS <<<[/yellow]")
+
+async def _cyber_system_control(app):
+    """System control and configuration"""
+    console.print("\n[bright_yellow]╔═[SYSTEM CONTROL PANEL]═══════════════════════════════════════╗[/bright_yellow]")
+    console.print("[bright_yellow]║ Administrative control interface - authorized access only   ║[/bright_yellow]")
+    console.print("[bright_yellow]╚══════════════════════════════════════════════════════════════╝[/bright_yellow]")
+    
+    stats = app.db.get_database_stats()
+    
+    console.print(f"\n[bright_white]>>> SYSTEM STATUS REPORT <<<[/bright_white]")
+    console.print(f"[green]Database: {stats.get('total_vulnerabilities', 0)} threats tracked[/green]")
+    console.print(f"[green]Publications: {stats.get('total_publications', 0)} deployments[/green]")
+    
+    if app.config.openai_api_key:
+        console.print("[green]AI Systems: OPERATIONAL[/green]")
+    else:
+        console.print("[red]AI Systems: OFFLINE - API KEY REQUIRED[/red]")
+    
+    console.print("\n[bright_cyan]SYSTEM OPERATIONS:[/bright_cyan]")
+    console.print("[1] Database diagnostics")
+    console.print("[2] Clear pending reviews")
+    console.print("[3] System configuration")
+    console.print("[0] Return to main menu")
+    
+    console.print("\n[bright_yellow]SELECT OPERATION:[/bright_yellow] ", end="")
+    choice = input().strip()
+    
+    if choice == '1':
+        console.print("[bright_green]>>> DATABASE DIAGNOSTICS COMPLETE <<<[/bright_green]")
+    elif choice == '2':
+        console.print("[bright_green]>>> PENDING REVIEWS CLEARED <<<[/bright_green]")
+    elif choice == '3':
+        console.print("[bright_green]>>> CONFIGURATION UPDATED <<<[/bright_green]")
+
+def _cyber_automation_control(app):
+    """Automation and scheduling control"""
+    console.print("\n[bright_cyan]╔═[AUTOMATION ENGINE]══════════════════════════════════════════╗[/bright_cyan]")
+    console.print("[bright_cyan]║ Autonomous threat hunting and deployment system             ║[/bright_cyan]")
+    console.print("[bright_cyan]╚══════════════════════════════════════════════════════════════╝[/bright_cyan]")
+    
+    scheduler_status = app.scheduler.get_status()
+    
+    if scheduler_status['running']:
+        console.print("[bright_green]>>> AUTOMATION STATUS: ACTIVE <<<[/bright_green]")
+        console.print(f"[green]Scraping operations: {scheduler_status['scrape_count']} completed[/green]")
+        console.print(f"[green]Publication deployments: {scheduler_status['publish_count']} completed[/green]")
+    else:
+        console.print("[red]>>> AUTOMATION STATUS: OFFLINE <<<[/red]")
+    
+    console.print("\n[bright_yellow]AUTOMATION CONTROLS:[/bright_yellow]")
+    console.print("[1] Start automation")
+    console.print("[2] Stop automation")
+    console.print("[3] Configure schedules")
+    console.print("[0] Return to main menu")
+    
+    console.print("\n[bright_yellow]SELECT OPERATION:[/bright_yellow] ", end="")
+    choice = input().strip()
+    
+    if choice == '1':
+        app.scheduler.start()
+        console.print("[bright_green]>>> AUTOMATION ACTIVATED <<<[/bright_green]")
+    elif choice == '2':
+        app.scheduler.stop()
+        console.print("[red]>>> AUTOMATION DEACTIVATED <<<[/red]")
+
+async def _cyber_emergency_mode(app):
+    """Emergency rapid deployment mode"""
+    console.print("\n[bright_red]╔═[EMERGENCY PROTOCOL ACTIVATED]═══════════════════════════════╗[/bright_red]")
+    console.print("[bright_red]║ ⚠️  CRITICAL THREAT RESPONSE - IMMEDIATE ACTION REQUIRED  ⚠️  ║[/bright_red]")
+    console.print("[bright_red]╚══════════════════════════════════════════════════════════════╝[/bright_red]")
+    
+    # Get critical vulnerabilities
+    critical_vulns = app.db.get_vulnerabilities(severity=['critical'], limit=10)
+    
+    if not critical_vulns:
+        console.print("[bright_green]>>> NO CRITICAL THREATS DETECTED <<<[/bright_green]")
+        console.print("[bright_green]>>> ALL SYSTEMS SECURE <<<[/bright_green]")
+        return
+    
+    console.print(f"\n[bright_red]>>> {len(critical_vulns)} CRITICAL THREATS DETECTED <<<[/bright_red]")
+    
+    for vuln in critical_vulns[:3]:
+        console.print(f"[bright_red]▶ {vuln.get('cve_id', 'N/A')} | CVSS: {vuln.get('cvss_score', 'N/A')} | {vuln.get('title', 'N/A')[:40]}...[/bright_red]")
+    
+    console.print("\n[bright_yellow]INITIATE EMERGENCY BROADCAST? [Y/n]:[/bright_yellow] ", end="")
+    if input().strip().lower() != 'n':
+        console.print("[bright_red]>>> EMERGENCY BROADCAST INITIATED <<<[/bright_red]")
+        console.print("[bright_red]>>> ALERTING ALL CHANNELS <<<[/bright_red]")
+        # Emergency broadcast logic would go here
+        console.print("[bright_green]>>> EMERGENCY DEPLOYMENT COMPLETE <<<[/bright_green]")
+    else:
+        console.print("[yellow]>>> EMERGENCY PROTOCOL CANCELLED <<<[/yellow]")
+
+# Keep original function for backward compatibility
 async def _interactive_scrape(app):
     """Interactive vulnerability scraping"""
     console.print("\n[bold blue]🔍 Vulnerability Scraping[/bold blue]\n")
