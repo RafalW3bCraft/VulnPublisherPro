@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 @dataclass
 class DatabaseConfig:
     url: Optional[str] = None  # PostgreSQL URL from DATABASE_URL secret
-    path: str = "vulnpublisher.db"  # Fallback SQLite path
     backup_enabled: bool = True
     backup_interval: int = 86400  # 24 hours
 
