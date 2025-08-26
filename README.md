@@ -19,6 +19,8 @@ A comprehensive Python CLI tool that automates vulnerability intelligence collec
 - **Content Generator** - ✅ AI-powered content creation
 - **Blog Engine** - ✅ Professional blog post generation
 
+## 🚀 SYSTEM CAPABILITIES
+## 🏗️ Architecture
 
 ### Core Components
 
@@ -39,7 +41,6 @@ A comprehensive Python CLI tool that automates vulnerability intelligence collec
 **Bug Bounty Platforms:**
 - HackerOne
 - Bugcrowd
-- Intigriti
 
 **Security Databases:**
 - GitHub Security Advisories
