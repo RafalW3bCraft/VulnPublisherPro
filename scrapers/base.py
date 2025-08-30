@@ -66,10 +66,10 @@ class BaseScraper(ABC):
         self.last_request_time = time.time()
     
     async def make_request(self, url: str, method: str = 'GET', 
-                          headers: Dict[str, str] = None,
-                          params: Dict[str, Any] = None,
-                          data: Dict[str, Any] = None,
-                          json_data: Dict[str, Any] = None) -> Optional[Dict[str, Any]]:
+                          headers: Optional[Dict[str, str]] = None,
+                          params: Optional[Dict[str, Any]] = None,
+                          data: Optional[Dict[str, Any]] = None,
+                          json_data: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
         """Make HTTP request with retry logic"""
         session = await self.get_session()
         
@@ -105,10 +105,15 @@ class BaseScraper(ABC):
                     # Try to parse JSON, fall back to text
                     try:
                         return await response.json()
-                    except:
-                        text = await response.text()
-                        logger.debug(f"Non-JSON response from {url}: {text[:200]}...")
-                        return {'text': text}
+                    except (aiohttp.ContentTypeError, ValueError, TypeError) as e:
+                        logger.debug(f"JSON parsing failed for {url}: {e}")
+                        try:
+                            text = await response.text()
+                            logger.debug(f"Non-JSON response from {url}: {text[:200]}...")
+                            return {'text': text}
+                        except Exception as text_error:
+                            logger.error(f"Failed to read response text from {url}: {text_error}")
+                            return None
                         
             except aiohttp.ClientError as e:
                 logger.warning(f"Request failed (attempt {attempt + 1}/{self.retry_attempts}): {e}")
@@ -124,10 +129,10 @@ class BaseScraper(ABC):
         return None
     
     def make_sync_request(self, url: str, method: str = 'GET',
-                         headers: Dict[str, str] = None,
-                         params: Dict[str, Any] = None,
-                         data: Dict[str, Any] = None,
-                         json_data: Dict[str, Any] = None) -> Optional[Dict[str, Any]]:
+                         headers: Optional[Dict[str, str]] = None,
+                         params: Optional[Dict[str, Any]] = None,
+                         data: Optional[Dict[str, Any]] = None,
+                         json_data: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
         """Make synchronous HTTP request (for compatibility)"""
         request_headers = {
             'User-Agent': self.user_agent,
@@ -184,11 +189,11 @@ class BaseScraper(ABC):
         return None
     
     @abstractmethod
-    async def scrape(self, limit: int = None) -> List[Dict[str, Any]]:
+    async def scrape(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         """Scrape vulnerabilities from the source"""
         pass
     
-    def normalize_severity(self, severity: str) -> str:
+    def normalize_severity(self, severity: Optional[str]) -> str:
         """Normalize severity to standard levels"""
         if not severity:
             return 'unknown'

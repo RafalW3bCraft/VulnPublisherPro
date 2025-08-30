@@ -116,6 +116,10 @@ class VulnPublisherPro:
         if not sources:
             sources = list(self.scrapers.keys())
         
+        # Use default limit from config if none provided
+        if limit is None:
+            limit = self.config.scraping_config.default_limit
+        
         results = {
             'total_scraped': 0,
             'total_new': 0,
@@ -967,10 +971,11 @@ async def _interactive_scrape(app):
         console.print("[yellow]⚠️  No sources selected[/yellow]")
         return
     
-    # Get limit
+    # Get limit (show current default)
+    current_default = app.config.scraping_config.default_limit
     limit_choices = [
         inquirer.Text('limit',
-            message="Limit per source (leave empty for no limit):",
+            message=f"Limit per source (default: {current_default}, leave empty for default):",
             default=""
         )
     ]
@@ -1076,6 +1081,12 @@ def _show_configuration(app):
     active_publishers = len([p for p in app.publishers.values() if p.is_configured()])
     config_table.add_row("Active Publishers", f"{active_publishers}/{len(app.publishers)}", 
                         "[green]✅[/green]" if active_publishers > 0 else "[yellow]⚠️[/yellow]")
+    
+    # Limits
+    scraping_config = app.config.scraping_config
+    config_table.add_row("Default Scraping Limit", str(scraping_config.default_limit), "[green]✅[/green]")
+    config_table.add_row("Content Generation Limit", str(scraping_config.content_generation_limit), "[green]✅[/green]")
+    config_table.add_row("Publication Limit", str(scraping_config.publication_limit), "[green]✅[/green]")
     
     console.print(config_table)
 

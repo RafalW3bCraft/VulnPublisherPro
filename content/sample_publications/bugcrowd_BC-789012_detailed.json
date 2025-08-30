@@ -1,0 +1,19 @@
+{
+  "title": "[ANALYSIS] Cross-Site Scripting (XSS) in Comment System - Bugcrowd Security Research",
+  "content": "# \ud83d\udd0d Bugcrowd Security Research Analysis\n\n## \ud83d\udcca **Disclosure Overview**\n**Submission ID:** BC-789012\n**Priority Rating:** MEDIUM\n**CVE Assignment:** TBD\n\n## \ud83c\udfaf **Engagement Details**\n**Target Program:** tech-startup\n**Security Researcher:** @xss_hunter\n**Disclosure Date:** February 20, 2024\n\n## \ud83d\udcb0 **Reward Information**\n**Monetary Award:** $1,500\n**Recognition:** Public acknowledgment in Bugcrowd Hall of Fame\n\n## \ud83d\udd10 **Vulnerability Classification**\n**Category:** Cross-Site Scripting\n**Affected Systems:** blog.techstartup.com\n\n### Technical Description\nA stored XSS vulnerability in the comment system allows attackers to inject malicious scripts that execute in other users' browsers.\n\n### Proof of Concept\n1. Submit comment with XSS payload\n2. View comment page as different user\n3. Observe script execution\n\n### Business Impact Analysis\nAccount takeover and data theft through session hijacking\n\n## \ud83d\udee1\ufe0f **Security Implications**\nThis vulnerability demonstrates the importance of continuous security testing and the value of crowdsourced security research through platforms like Bugcrowd.\n\n## \ud83d\udcc8 **Research Methodology**\nThe discovery follows responsible disclosure practices:\n1. Initial discovery and validation\n2. Detailed documentation and PoC development  \n3. Responsible disclosure through Bugcrowd platform\n4. Collaboration with security team for remediation\n5. Public disclosure after remediation\n\n## \ud83d\udd17 **Additional Resources**\n- **Original Submission:** https://bugcrowd.com/submissions/BC-789012\n- **Bugcrowd Program:** https://bugcrowd.com/tech-startup\n\n---\n*Analysis based on publicly disclosed Bugcrowd submissions. Recognition to the security researcher and coordinated disclosure process.*\n\n#Bugcrowd #SecurityResearch #VulnerabilityDisclosure #CrowdsourcedSecurity #ResponsibleDisclosure",
+  "platform": "bugcrowd",
+  "format_type": "detailed",
+  "tags": [
+    "vulnerability",
+    "bugcrowd",
+    "security-research",
+    "disclosure",
+    "medium"
+  ],
+  "metadata": {
+    "bounty_amount": 1500.0,
+    "researcher": "xss_hunter",
+    "program": "tech-startup",
+    "submission_url": "https://bugcrowd.com/submissions/BC-789012"
+  }
+}

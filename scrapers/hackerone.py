@@ -1,12 +1,14 @@
 """
 HackerOne API scraper
 API Documentation: https://api.hackerone.com/v1/
+Enhanced with industry-level disclosure format parsing
 """
 
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
 import base64
 from .base import BaseScraper
+from .disclosure_formats import DisclosureFormatManager, VulnerabilityDisclosure
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,11 +21,12 @@ class HackerOneScraper(BaseScraper):
         self.base_url = "https://api.hackerone.com/v1"
         self.username = config.hackerone_username
         self.token = config.hackerone_token
+        self.disclosure_manager = DisclosureFormatManager()
         
         # HackerOne rate limits vary by endpoint
         self.rate_limit_delay = 1.0
     
-    async def scrape(self, limit: int = None) -> List[Dict[str, Any]]:
+    async def scrape(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         """Scrape disclosed reports from HackerOne"""
         if not self.username or not self.token:
             logger.warning("HackerOne credentials not configured, skipping")
@@ -76,8 +79,11 @@ class HackerOneScraper(BaseScraper):
                 
                 for report in reports:
                     try:
-                        vuln = self._parse_report(report)
-                        if vuln:
+                        # Parse using disclosure format manager
+                        disclosure = self.disclosure_manager.parse_disclosure('hackerone', report)
+                        if disclosure:
+                            # Convert to legacy format for compatibility
+                            vuln = self._disclosure_to_dict(disclosure)
                             vulnerabilities.append(vuln)
                             
                             # Check limit
@@ -176,6 +182,47 @@ class HackerOneScraper(BaseScraper):
         except Exception as e:
             logger.error(f"Error parsing HackerOne report {report.get('id', 'unknown')}: {e}")
             return None
+    
+    def _disclosure_to_dict(self, disclosure: VulnerabilityDisclosure) -> Dict[str, Any]:
+        """Convert disclosure format to legacy vulnerability dictionary"""
+        description = disclosure.description
+        if disclosure.researcher:
+            description += f"\n\nReported by: {disclosure.researcher}"
+        if disclosure.bounty_amount:
+            description += f"\nBounty: ${disclosure.bounty_amount:,.0f}"
+        if disclosure.steps_to_reproduce:
+            description += f"\n\nSteps to Reproduce:\n{disclosure.steps_to_reproduce}"
+        if disclosure.impact:
+            description += f"\n\nImpact:\n{disclosure.impact}"
+        
+        return self.create_vulnerability_dict(
+            vulnerability_id=f"H1-{disclosure.disclosure_id}",
+            title=disclosure.title,
+            description=description,
+            severity=disclosure.severity,
+            cvss_score=disclosure.cvss_score,
+            cve_id=disclosure.cve_id,
+            affected_products=[disclosure.program] if disclosure.program else [],
+            references=[f"https://hackerone.com/reports/{disclosure.disclosure_id}"],
+            published_date=disclosure.disclosure_date.isoformat() if disclosure.disclosure_date else None,
+            source_url=f"https://hackerone.com/reports/{disclosure.disclosure_id}",
+            tags=['hackerone', 'bug_bounty', disclosure.severity] + (
+                [disclosure.vulnerability_type] if disclosure.vulnerability_type else []
+            ),
+            raw_data=disclosure.raw_data,
+            exploit_available=disclosure.bounty_amount is not None,
+            # Additional HackerOne-specific fields
+            additional_data={
+                'disclosure_format': 'hackerone_v1',
+                'bounty_amount': disclosure.bounty_amount,
+                'researcher': disclosure.researcher,
+                'program': disclosure.program,
+                'vulnerability_type': disclosure.vulnerability_type,
+                'affected_domains': disclosure.affected_domains,
+                'timeline': disclosure.timeline,
+                'attachments': disclosure.attachments
+            }
+        )
     
     def _map_severity(self, severity: str) -> str:
         """Map HackerOne severity to standard levels"""

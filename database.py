@@ -478,7 +478,7 @@ class DatabaseManager:
             logger.error(f"Error getting pending review vulnerabilities: {e}")
             return []
     
-    def update_vulnerability_review_status(self, vuln_id: int, status: str, notes: str = None) -> bool:
+    def update_vulnerability_review_status(self, vuln_id: int, status: str, notes: Optional[str] = None) -> bool:
         """Update vulnerability review status"""
         conn = self.get_connection()
         cursor = conn.cursor()
@@ -513,7 +513,10 @@ class DatabaseManager:
                 RETURNING id
             """, (vulnerability_id, platform, content_type, content, status))
             
-            draft_id = cursor.fetchone()[0]
+            result = cursor.fetchone()
+            if not result:
+                raise ValueError("Failed to get draft ID from database")
+            draft_id = result[0]
             conn.commit()
             
             logger.info(f"Stored content draft {draft_id} for vulnerability {vulnerability_id}")
@@ -524,7 +527,7 @@ class DatabaseManager:
             conn.rollback()
             return 0
 
-    def get_content_drafts(self, vulnerability_id: int = None, status: str = None) -> List[Dict[str, Any]]:
+    def get_content_drafts(self, vulnerability_id: Optional[int] = None, status: Optional[str] = None) -> List[Dict[str, Any]]:
         """Get content drafts for review"""
         conn = self.get_connection()
         cursor = conn.cursor()
@@ -613,7 +616,7 @@ class DatabaseManager:
             stats['total_publications'] = result[0] if result else 0
             
             # Get recent activity (last 7 days)
-            cursor.execute("SELECT COUNT(*) FROM vulnerabilities WHERE created_at >= NOW() - INTERVAL '7 days'")
+            cursor.execute("SELECT COUNT(*) FROM vulnerabilities WHERE created_at >= CURRENT_TIMESTAMP - INTERVAL '7 days'")
             result = cursor.fetchone()
             stats['recent_vulnerabilities'] = result[0] if result else 0
             
@@ -622,6 +625,10 @@ class DatabaseManager:
             stats['error'] = str(e)
         
         return stats
+    
+    def get_statistics(self) -> Dict[str, Any]:
+        """Alias for get_database_stats for compatibility"""
+        return self.get_database_stats()
     
     def backup_database(self, backup_path: str):
         """PostgreSQL database backup not supported via this method"""

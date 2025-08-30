@@ -1,0 +1,18 @@
+{
+  "title": "\ud83d\udfe1 Bugcrowd Disclosure: Cross-Site Scripting (XSS) in Comment System...",
+  "content": "\ud83d\udfe1 **Bugcrowd Security Disclosure**\n\n**Title:** Cross-Site Scripting (XSS) in Comment System\n**Priority:** MEDIUM\n**Target:** tech-startup\n**Hunter:** @xss_hunter\n\n\ud83d\udcb8 **Bounty:** $1,500 awarded!\n\n**Vulnerability Type:** Cross-Site Scripting\n\n**Brief:**\nA stored XSS vulnerability in the comment system allows attackers to inject malicious scripts that execute in other users' browsers.\n\n**Impact:** Account takeover and data theft through session hijacking\n\n\ud83d\udd17 **Submission:** https://bugcrowd.com/submissions/BC-789012\n\n#Bugcrowd #CrowdsourcedSecurity #VulnResearch #MediumPriority #CyberSecurity",
+  "platform": "bugcrowd",
+  "format_type": "summary",
+  "hashtags": [
+    "Bugcrowd",
+    "CrowdsourcedSecurity",
+    "VulnResearch",
+    "MediumPriority"
+  ],
+  "metadata": {
+    "bounty_amount": 1500.0,
+    "researcher": "xss_hunter",
+    "program": "tech-startup",
+    "submission_url": "https://bugcrowd.com/submissions/BC-789012"
+  }
+}

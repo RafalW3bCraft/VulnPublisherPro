@@ -13,13 +13,6 @@ A comprehensive Python CLI tool that automates vulnerability intelligence collec
 - **Automated Scheduling**: Background task scheduling for continuous operation
 - **Database Management**: PostgreSQL support with automated backup and cleanup
 
-### 🤖 AI Integration
-- **Auto Categorizer** - ✅ Automatic vulnerability classification
-- **Expert Simulator** - ✅ Expert interview generation
-- **Content Generator** - ✅ AI-powered content creation
-- **Blog Engine** - ✅ Professional blog post generation
-
-## 🚀 SYSTEM CAPABILITIES
 ## 🏗️ Architecture
 
 ### Core Components
@@ -41,6 +34,7 @@ A comprehensive Python CLI tool that automates vulnerability intelligence collec
 **Bug Bounty Platforms:**
 - HackerOne
 - Bugcrowd
+- Intigriti
 
 **Security Databases:**
 - GitHub Security Advisories

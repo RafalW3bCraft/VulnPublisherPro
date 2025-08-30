@@ -20,7 +20,9 @@ class DatabaseConfig:
 
 @dataclass
 class ScrapingConfig:
-    default_limit: int = 100
+    default_limit: int = 3
+    content_generation_limit: int = 3
+    publication_limit: int = 3
     rate_limit_delay: float = 1.0
     retry_attempts: int = 3
     timeout: int = 30
@@ -30,6 +32,7 @@ class ScrapingConfig:
 class PublishingConfig:
     default_platforms: Optional[list] = None
     content_templates: Optional[Dict[str, str]] = None
+    max_publications_per_batch: int = 3
     rate_limit_delay: float = 2.0
     retry_attempts: int = 3
 

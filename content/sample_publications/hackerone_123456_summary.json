@@ -1,0 +1,18 @@
+{
+  "title": "\ud83d\udfe0 HackerOne Disclosure: SQL Injection in User Authentication System...",
+  "content": "\ud83d\udfe0 **HackerOne Disclosure Alert**\n\n**Title:** SQL Injection in User Authentication System\n**Severity:** HIGH\n**Program:** example-corp\n**Researcher:** @security_researcher\n\n\ud83d\udcb0 **Bounty:** $5,000 USD awarded!\n\n**Summary:**\nA SQL injection vulnerability was discovered in the user authentication system that allows an attacker to bypass login controls and access sensitive user data.\n\n**Affected Domain:** app.example.com, api.example.com\n\n\ud83d\udd17 **Report:** https://hackerone.com/reports/123456\n\n#HackerOne #BugBounty #CyberSecurity #HighSeverity #VulnDisclosure",
+  "platform": "hackerone",
+  "format_type": "summary",
+  "hashtags": [
+    "HackerOne",
+    "BugBounty",
+    "CyberSecurity",
+    "HighSeverity"
+  ],
+  "metadata": {
+    "bounty_amount": 5000.0,
+    "researcher": "security_researcher",
+    "program": "example-corp",
+    "report_url": "https://hackerone.com/reports/123456"
+  }
+}

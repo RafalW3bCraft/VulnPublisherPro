@@ -44,8 +44,12 @@ class NVDScraper(BaseScraper):
                 headers['apiKey'] = self.api_key
             
             # Get recent CVEs (last 7 days by default)
-            recent_date = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%dT%H:%M:%S.000')
-            params['lastModStartDate'] = recent_date
+            # NVD requires both start and end dates with max 120-day range
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=7)
+            
+            params['lastModStartDate'] = start_date.strftime('%Y-%m-%dT%H:%M:%S.000')
+            params['lastModEndDate'] = end_date.strftime('%Y-%m-%dT%H:%M:%S.000')
             
             total_results = 0
             
@@ -59,8 +63,30 @@ class NVDScraper(BaseScraper):
                 )
                 
                 if not response:
-                    logger.error("Failed to get response from NVD API")
-                    break
+                    # If date filtering failed, try without date filter
+                    if 'lastModStartDate' in params:
+                        logger.warning("Date filtering failed, trying without date filter")
+                        params_no_date = {
+                            'resultsPerPage': params['resultsPerPage'],
+                            'startIndex': params['startIndex']
+                        }
+                        response = await self.make_request(
+                            url=self.base_url,
+                            params=params_no_date,
+                            headers=headers
+                        )
+                        if response:
+                            # Remove date filters for subsequent requests
+                            if 'lastModStartDate' in params:
+                                del params['lastModStartDate']
+                            if 'lastModEndDate' in params:
+                                del params['lastModEndDate']
+                        else:
+                            logger.error("Failed to get response from NVD API even without date filter")
+                            break
+                    else:
+                        logger.error("Failed to get response from NVD API")
+                        break
                 
                 # Parse response
                 if 'vulnerabilities' not in response:

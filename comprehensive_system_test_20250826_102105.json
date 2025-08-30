@@ -1,0 +1,905 @@
+{
+  "test_id": "comprehensive_test_20250826_101920",
+  "started_at": "2025-08-26T10:19:20.287797",
+  "configuration": {
+    "platforms_tested": [
+      "twitter",
+      "linkedin",
+      "medium",
+      "telegram",
+      "discord"
+    ],
+    "content_types_tested": [
+      "summary",
+      "detailed",
+      "threat_intel"
+    ],
+    "scraper_limit": 5,
+    "user_review_enabled": false
+  },
+  "results": {
+    "scraper_validation": {
+      "scrapers_tested": 8,
+      "successful_scrapers": 2,
+      "total_vulnerabilities": 10,
+      "average_quality_score": 24.15,
+      "best_performing_scraper": "github_security",
+      "data_sources_available": [
+        "hackerone",
+        "bugcrowd",
+        "exploit_db",
+        "nvd",
+        "github_security",
+        "cisa_kev",
+        "mitre_cve",
+        "cve_details"
+      ],
+      "validation_details": {
+        "validation_timestamp": "2025-08-26T10:19:20.296921",
+        "scrapers_tested": 8,
+        "results": {
+          "hackerone": {
+            "scraper_name": "hackerone",
+            "tested_at": "2025-08-26T10:19:20.297747",
+            "data_quality_score": 0,
+            "completeness_score": 0,
+            "compliance_score": 0,
+            "performance_score": 0,
+            "overall_score": 0,
+            "vulnerabilities_found": 0,
+            "issues": [
+              "No vulnerabilities found - check API credentials or data availability"
+            ],
+            "strengths": [],
+            "sample_data": [],
+            "scrape_time_seconds": 0.00013
+          },
+          "bugcrowd": {
+            "scraper_name": "bugcrowd",
+            "tested_at": "2025-08-26T10:19:20.306293",
+            "data_quality_score": 0,
+            "completeness_score": 0,
+            "compliance_score": 0,
+            "performance_score": 0,
+            "overall_score": 0,
+            "vulnerabilities_found": 0,
+            "issues": [
+              "No vulnerabilities found - check API credentials or data availability"
+            ],
+            "strengths": [],
+            "sample_data": [],
+            "scrape_time_seconds": 0.000196
+          },
+          "exploit_db": {
+            "scraper_name": "exploit_db",
+            "tested_at": "2025-08-26T10:19:20.313907",
+            "data_quality_score": 0,
+            "completeness_score": 0,
+            "compliance_score": 0,
+            "performance_score": 0,
+            "overall_score": 0,
+            "vulnerabilities_found": 0,
+            "issues": [
+              "No vulnerabilities found - check API credentials or data availability"
+            ],
+            "strengths": [],
+            "sample_data": [],
+            "scrape_time_seconds": 1.43844
+          },
+          "nvd": {
+            "scraper_name": "nvd",
+            "tested_at": "2025-08-26T10:19:21.759555",
+            "data_quality_score": 0,
+            "completeness_score": 0,
+            "compliance_score": 0,
+            "performance_score": 0,
+            "overall_score": 0,
+            "vulnerabilities_found": 0,
+            "issues": [
+              "No vulnerabilities found - check API credentials or data availability"
+            ],
+            "strengths": [],
+            "sample_data": [],
+            "scrape_time_seconds": 5.250133
+          },
+          "github_security": {
+            "scraper_name": "github_security",
+            "tested_at": "2025-08-26T10:19:27.018631",
+            "data_quality_score": 100.0,
+            "completeness_score": 93.99999999999999,
+            "compliance_score": 100.0,
+            "performance_score": 92.0,
+            "overall_score": 96.6,
+            "vulnerabilities_found": 5,
+            "issues": [],
+            "strengths": [],
+            "sample_data": [
+              {
+                "cve_id": "CVE-2025-7345",
+                "vulnerability_id": "GHSA-xrq2-m5w8-p5wg",
+                "title": "A flaw exists in gdk\u2011pixbuf within the gdk_pixbuf__jpeg_image_load_increment function (io-jpeg.c)...",
+                "description": "A flaw exists in gdk\u2011pixbuf within the gdk_pixbuf__jpeg_image_load_increment function (io-jpeg.c)... A flaw exists in gdk\u2011pixbuf within the gdk_pixbuf__jpeg_image_load_increment function (io-jpeg.c) and in glib\u2019s g_base64_encode_step (glib/gbase64.c). When processing maliciously crafted JPEG images, a heap buffer overflow can occur during Base64 encoding, allowing out-of-bounds reads from heap memory, potentially causing application crashes or arbitrary code execution.",
+                "severity": "high",
+                "cvss_score": 7.5,
+                "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "cwe_id": null,
+                "affected_products": [],
+                "references": [
+                  "https://nvd.nist.gov/vuln/detail/CVE-2025-7345",
+                  "https://access.redhat.com/security/cve/CVE-2025-7345",
+                  "https://bugzilla.redhat.com/show_bug.cgi?id=2377063",
+                  "https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/issues/249",
+                  "https://access.redhat.com/errata/RHSA-2025:12841",
+                  "https://access.redhat.com/errata/RHSA-2025:12862",
+                  "https://access.redhat.com/errata/RHSA-2025:13315",
+                  "https://access.redhat.com/errata/RHSA-2025:14574",
+                  "https://access.redhat.com/errata/RHSA-2025:14575",
+                  "https://access.redhat.com/errata/RHSA-2025:14576",
+                  "https://github.com/advisories/GHSA-xrq2-m5w8-p5wg"
+                ],
+                "technical_details": "",
+                "impact": "",
+                "mitigation": "",
+                "exploit_available": false,
+                "poc_available": false,
+                "source": "github_security",
+                "source_url": "https://github.com/advisories/GHSA-xrq2-m5w8-p5wg",
+                "published_date": "2025-07-08T15:32:03+00:00",
+                "updated_date": "2025-08-26T09:31:30+00:00",
+                "discovered_date": null,
+                "disclosure_date": null,
+                "vendor_response": null,
+                "tags": [
+                  "github",
+                  "ghsa"
+                ],
+                "raw_data": {
+                  "ghsa_id": "GHSA-xrq2-m5w8-p5wg",
+                  "cve_id": "CVE-2025-7345",
+                  "url": "https://api.github.com/advisories/GHSA-xrq2-m5w8-p5wg",
+                  "html_url": "https://github.com/advisories/GHSA-xrq2-m5w8-p5wg",
+                  "summary": "A flaw exists in gdk\u2011pixbuf within the gdk_pixbuf__jpeg_image_load_increment function (io-jpeg.c)...",
+                  "description": "A flaw exists in gdk\u2011pixbuf within the gdk_pixbuf__jpeg_image_load_increment function (io-jpeg.c) and in glib\u2019s g_base64_encode_step (glib/gbase64.c). When processing maliciously crafted JPEG images, a heap buffer overflow can occur during Base64 encoding, allowing out-of-bounds reads from heap memory, potentially causing application crashes or arbitrary code execution.",
+                  "type": "unreviewed",
+                  "severity": "high",
+                  "repository_advisory_url": null,
+                  "source_code_location": "",
+                  "identifiers": [
+                    {
+                      "value": "GHSA-xrq2-m5w8-p5wg",
+                      "type": "GHSA"
+                    },
+                    {
+                      "value": "CVE-2025-7345",
+                      "type": "CVE"
+                    }
+                  ],
+                  "references": [
+                    "https://nvd.nist.gov/vuln/detail/CVE-2025-7345",
+                    "https://access.redhat.com/security/cve/CVE-2025-7345",
+                    "https://bugzilla.redhat.com/show_bug.cgi?id=2377063",
+                    "https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/issues/249",
+                    "https://access.redhat.com/errata/RHSA-2025:12841",
+                    "https://access.redhat.com/errata/RHSA-2025:12862",
+                    "https://access.redhat.com/errata/RHSA-2025:13315",
+                    "https://access.redhat.com/errata/RHSA-2025:14574",
+                    "https://access.redhat.com/errata/RHSA-2025:14575",
+                    "https://access.redhat.com/errata/RHSA-2025:14576",
+                    "https://github.com/advisories/GHSA-xrq2-m5w8-p5wg"
+                  ],
+                  "published_at": "2025-07-08T15:32:03Z",
+                  "updated_at": "2025-08-26T09:31:30Z",
+                  "github_reviewed_at": null,
+                  "nvd_published_at": "2025-07-08T14:15:32Z",
+                  "withdrawn_at": null,
+                  "vulnerabilities": [],
+                  "cvss_severities": {
+                    "cvss_v3": {
+                      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                      "score": 7.5
+                    },
+                    "cvss_v4": {
+                      "vector_string": null,
+                      "score": 0.0
+                    }
+                  },
+                  "cwes": [
+                    {
+                      "cwe_id": "CWE-120",
+                      "name": "Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')"
+                    },
+                    {
+                      "cwe_id": "CWE-787",
+                      "name": "Out-of-bounds Write"
+                    }
+                  ],
+                  "credits": [],
+                  "cvss": {
+                    "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                    "score": 7.5
+                  },
+                  "epss": {
+                    "percentage": 0.00088,
+                    "percentile": 0.26164
+                  }
+                }
+              },
+              {
+                "cve_id": "CVE-2025-53419",
+                "vulnerability_id": "GHSA-mhcc-g7mc-6pvh",
+                "title": "Delta Electronics COMMGR has Code Injection vulnerability.",
+                "description": "Delta Electronics COMMGR has Code Injection vulnerability.",
+                "severity": "high",
+                "cvss_score": 7.8,
+                "cvss_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                "cwe_id": null,
+                "affected_products": [],
+                "references": [
+                  "https://nvd.nist.gov/vuln/detail/CVE-2025-53419",
+                  "https://filecenter.deltaww.com/news/download/doc/Delta-PCSA-2025-00014_COMMGR%20Stack-based%20Buffer%20Overflow%20and%20Code%20Injection%20Vulnerabilities.pdf",
+                  "https://github.com/advisories/GHSA-mhcc-g7mc-6pvh"
+                ],
+                "technical_details": "",
+                "impact": "",
+                "mitigation": "",
+                "exploit_available": false,
+                "poc_available": false,
+                "source": "github_security",
+                "source_url": "https://github.com/advisories/GHSA-mhcc-g7mc-6pvh",
+                "published_date": "2025-08-26T09:30:28+00:00",
+                "updated_date": "2025-08-26T09:30:35+00:00",
+                "discovered_date": null,
+                "disclosure_date": null,
+                "vendor_response": null,
+                "tags": [
+                  "github",
+                  "ghsa"
+                ],
+                "raw_data": {
+                  "ghsa_id": "GHSA-mhcc-g7mc-6pvh",
+                  "cve_id": "CVE-2025-53419",
+                  "url": "https://api.github.com/advisories/GHSA-mhcc-g7mc-6pvh",
+                  "html_url": "https://github.com/advisories/GHSA-mhcc-g7mc-6pvh",
+                  "summary": "Delta Electronics COMMGR has Code Injection vulnerability.",
+                  "description": "Delta Electronics COMMGR has Code Injection vulnerability.",
+                  "type": "unreviewed",
+                  "severity": "high",
+                  "repository_advisory_url": null,
+                  "source_code_location": "",
+                  "identifiers": [
+                    {
+                      "value": "GHSA-mhcc-g7mc-6pvh",
+                      "type": "GHSA"
+                    },
+                    {
+                      "value": "CVE-2025-53419",
+                      "type": "CVE"
+                    }
+                  ],
+                  "references": [
+                    "https://nvd.nist.gov/vuln/detail/CVE-2025-53419",
+                    "https://filecenter.deltaww.com/news/download/doc/Delta-PCSA-2025-00014_COMMGR%20Stack-based%20Buffer%20Overflow%20and%20Code%20Injection%20Vulnerabilities.pdf",
+                    "https://github.com/advisories/GHSA-mhcc-g7mc-6pvh"
+                  ],
+                  "published_at": "2025-08-26T09:30:28Z",
+                  "updated_at": "2025-08-26T09:30:35Z",
+                  "github_reviewed_at": null,
+                  "nvd_published_at": "2025-08-26T07:15:33Z",
+                  "withdrawn_at": null,
+                  "vulnerabilities": [],
+                  "cvss_severities": {
+                    "cvss_v3": {
+                      "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                      "score": 7.8
+                    },
+                    "cvss_v4": {
+                      "vector_string": null,
+                      "score": 0.0
+                    }
+                  },
+                  "cwes": [
+                    {
+                      "cwe_id": "CWE-94",
+                      "name": "Improper Control of Generation of Code ('Code Injection')"
+                    }
+                  ],
+                  "credits": [],
+                  "cvss": {
+                    "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                    "score": 7.8
+                  }
+                }
+              },
+              {
+                "cve_id": "CVE-2025-57704",
+                "vulnerability_id": "GHSA-gq57-cpj2-wwmc",
+                "title": "Delta Electronics EIP Builder version 1.11 is vulnerable to a File Parsing XML External Entity...",
+                "description": "Delta Electronics EIP Builder version 1.11 is vulnerable to a File Parsing XML External Entity... Delta Electronics EIP Builder version 1.11 is vulnerable to a File Parsing XML External Entity Processing Information Disclosure Vulnerability.",
+                "severity": "medium",
+                "cvss_score": 5.5,
+                "cvss_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N",
+                "cwe_id": null,
+                "affected_products": [],
+                "references": [
+                  "https://nvd.nist.gov/vuln/detail/CVE-2025-57704",
+                  "https://filecenter.deltaww.com/news/download/doc/Delta-PCSA-2025-00013_EIP%20Builder%20XML%20External%20Entity%20Processing%20Information%20Disclosure%20Vulnerability.pdf",
+                  "https://github.com/advisories/GHSA-gq57-cpj2-wwmc"
+                ],
+                "technical_details": "",
+                "impact": "",
+                "mitigation": "",
+                "exploit_available": false,
+                "poc_available": false,
+                "source": "github_security",
+                "source_url": "https://github.com/advisories/GHSA-gq57-cpj2-wwmc",
+                "published_date": "2025-08-26T09:30:28+00:00",
+                "updated_date": "2025-08-26T09:30:35+00:00",
+                "discovered_date": null,
+                "disclosure_date": null,
+                "vendor_response": null,
+                "tags": [
+                  "github",
+                  "ghsa"
+                ],
+                "raw_data": {
+                  "ghsa_id": "GHSA-gq57-cpj2-wwmc",
+                  "cve_id": "CVE-2025-57704",
+                  "url": "https://api.github.com/advisories/GHSA-gq57-cpj2-wwmc",
+                  "html_url": "https://github.com/advisories/GHSA-gq57-cpj2-wwmc",
+                  "summary": "Delta Electronics EIP Builder version 1.11 is vulnerable to a File Parsing XML External Entity...",
+                  "description": "Delta Electronics EIP Builder version 1.11 is vulnerable to a File Parsing XML External Entity Processing Information Disclosure Vulnerability.",
+                  "type": "unreviewed",
+                  "severity": "medium",
+                  "repository_advisory_url": null,
+                  "source_code_location": "",
+                  "identifiers": [
+                    {
+                      "value": "GHSA-gq57-cpj2-wwmc",
+                      "type": "GHSA"
+                    },
+                    {
+                      "value": "CVE-2025-57704",
+                      "type": "CVE"
+                    }
+                  ],
+                  "references": [
+                    "https://nvd.nist.gov/vuln/detail/CVE-2025-57704",
+                    "https://filecenter.deltaww.com/news/download/doc/Delta-PCSA-2025-00013_EIP%20Builder%20XML%20External%20Entity%20Processing%20Information%20Disclosure%20Vulnerability.pdf",
+                    "https://github.com/advisories/GHSA-gq57-cpj2-wwmc"
+                  ],
+                  "published_at": "2025-08-26T09:30:28Z",
+                  "updated_at": "2025-08-26T09:30:35Z",
+                  "github_reviewed_at": null,
+                  "nvd_published_at": "2025-08-26T07:15:33Z",
+                  "withdrawn_at": null,
+                  "vulnerabilities": [],
+                  "cvss_severities": {
+                    "cvss_v3": {
+                      "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N",
+                      "score": 5.5
+                    },
+                    "cvss_v4": {
+                      "vector_string": null,
+                      "score": 0.0
+                    }
+                  },
+                  "cwes": [
+                    {
+                      "cwe_id": "CWE-611",
+                      "name": "Improper Restriction of XML External Entity Reference"
+                    }
+                  ],
+                  "credits": [],
+                  "cvss": {
+                    "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N",
+                    "score": 5.5
+                  }
+                }
+              }
+            ],
+            "scrape_time_seconds": 0.316562
+          },
+          "cisa_kev": {
+            "scraper_name": "cisa_kev",
+            "tested_at": "2025-08-26T10:19:27.345683",
+            "data_quality_score": 100.0,
+            "completeness_score": 93.99999999999999,
+            "compliance_score": 100.0,
+            "performance_score": 92.0,
+            "overall_score": 96.6,
+            "vulnerabilities_found": 5,
+            "issues": [],
+            "strengths": [],
+            "sample_data": [
+              {
+                "cve_id": "CVE-2025-48384",
+                "vulnerability_id": "KEV-CVE-2025-48384",
+                "title": "Git Link Following Vulnerability",
+                "description": "Git contains a link following vulnerability that stems from Git\u2019s inconsistent handling of carriage return characters in configuration files. Affected Product: Git Git Required Action: Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable. Due Date: 2025-09-15 Notes: This vulnerability affects a common open-source component, third-party library, or a protocol used by different products. For more information, please see: https://github.com/git/git/security/advisories/GHSA-vwqx-4fm8-6qc9 ; https://access.redhat.com/errata/RHSA-2025:13933 ; https://alas.aws.amazon.com/AL2/ALAS2-2025-2941.html ; https://linux.oracle.com/errata/ELSA-2025-11534.html ; https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-48384 ; https://nvd.nist.gov/vuln/detail/CVE-2025-48384",
+                "severity": "critical",
+                "cvss_score": null,
+                "cvss_vector": null,
+                "cwe_id": null,
+                "affected_products": [
+                  "Git Git"
+                ],
+                "references": [
+                  "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+                ],
+                "technical_details": "Git contains a link following vulnerability that stems from Git\u2019s inconsistent handling of carriage return characters in configuration files.",
+                "impact": "Active exploitation observed in the wild",
+                "mitigation": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+                "exploit_available": true,
+                "poc_available": false,
+                "source": "cisa_kev",
+                "source_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+                "published_date": "2025-08-25T00:00:00",
+                "updated_date": null,
+                "discovered_date": null,
+                "disclosure_date": null,
+                "vendor_response": null,
+                "tags": [
+                  "cisa",
+                  "kev",
+                  "actively_exploited"
+                ],
+                "raw_data": {
+                  "cveID": "CVE-2025-48384",
+                  "vendorProject": "Git",
+                  "product": "Git",
+                  "vulnerabilityName": "Git Link Following Vulnerability",
+                  "dateAdded": "2025-08-25",
+                  "shortDescription": "Git contains a link following vulnerability that stems from Git\u2019s inconsistent handling of carriage return characters in configuration files.",
+                  "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+                  "dueDate": "2025-09-15",
+                  "knownRansomwareCampaignUse": "Unknown",
+                  "notes": "This vulnerability affects a common open-source component, third-party library, or a protocol used by different products. For more information, please see: https://github.com/git/git/security/advisories/GHSA-vwqx-4fm8-6qc9 ; https://access.redhat.com/errata/RHSA-2025:13933 ; https://alas.aws.amazon.com/AL2/ALAS2-2025-2941.html ; https://linux.oracle.com/errata/ELSA-2025-11534.html ; https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-48384 ; https://nvd.nist.gov/vuln/detail/CVE-2025-48384",
+                  "cwes": [
+                    "CWE-59",
+                    "CWE-436"
+                  ]
+                }
+              },
+              {
+                "cve_id": "CVE-2024-8068",
+                "vulnerability_id": "KEV-CVE-2024-8068",
+                "title": "Citrix Session Recording Improper Privilege Management Vulnerability",
+                "description": "Citrix Session Recording contains an improper privilege management vulnerability that could allow for privilege escalation to NetworkService Account access. An attacker must be an authenticated user in the same Windows Active Directory domain as the session recording server domain. Affected Product: Citrix Session Recording Required Action: Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable. Due Date: 2025-09-15 Notes: https://support.citrix.com/external/article/691941/citrix-session-recording-security-bullet.html ; https://nvd.nist.gov/vuln/detail/CVE-2024-8068",
+                "severity": "critical",
+                "cvss_score": null,
+                "cvss_vector": null,
+                "cwe_id": null,
+                "affected_products": [
+                  "Citrix Session Recording"
+                ],
+                "references": [
+                  "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+                ],
+                "technical_details": "Citrix Session Recording contains an improper privilege management vulnerability that could allow for privilege escalation to NetworkService Account access. An attacker must be an authenticated user in the same Windows Active Directory domain as the session recording server domain.",
+                "impact": "Active exploitation observed in the wild",
+                "mitigation": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+                "exploit_available": true,
+                "poc_available": false,
+                "source": "cisa_kev",
+                "source_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+                "published_date": "2025-08-25T00:00:00",
+                "updated_date": null,
+                "discovered_date": null,
+                "disclosure_date": null,
+                "vendor_response": null,
+                "tags": [
+                  "cisa",
+                  "kev",
+                  "actively_exploited"
+                ],
+                "raw_data": {
+                  "cveID": "CVE-2024-8068",
+                  "vendorProject": "Citrix",
+                  "product": "Session Recording",
+                  "vulnerabilityName": "Citrix Session Recording Improper Privilege Management Vulnerability",
+                  "dateAdded": "2025-08-25",
+                  "shortDescription": "Citrix Session Recording contains an improper privilege management vulnerability that could allow for privilege escalation to NetworkService Account access. An attacker must be an authenticated user in the same Windows Active Directory domain as the session recording server domain.",
+                  "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+                  "dueDate": "2025-09-15",
+                  "knownRansomwareCampaignUse": "Unknown",
+                  "notes": "https://support.citrix.com/external/article/691941/citrix-session-recording-security-bullet.html ; https://nvd.nist.gov/vuln/detail/CVE-2024-8068",
+                  "cwes": [
+                    "CWE-269"
+                  ]
+                }
+              },
+              {
+                "cve_id": "CVE-2024-8069",
+                "vulnerability_id": "KEV-CVE-2024-8069",
+                "title": "Citrix Session Recording Deserialization of Untrusted Data Vulnerability",
+                "description": "Citrix Session Recording contains a deserialization of untrusted data vulnerability that allows limited remote code execution with privilege of a NetworkService Account access. Attacker must be an authenticated user on the same intranet as the session recording server. Affected Product: Citrix Session Recording Required Action: Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable. Due Date: 2025-09-15 Notes: https://support.citrix.com/external/article/691941/citrix-session-recording-security-bullet.html ; https://nvd.nist.gov/vuln/detail/CVE-2024-8069",
+                "severity": "critical",
+                "cvss_score": null,
+                "cvss_vector": null,
+                "cwe_id": null,
+                "affected_products": [
+                  "Citrix Session Recording"
+                ],
+                "references": [
+                  "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+                ],
+                "technical_details": "Citrix Session Recording contains a deserialization of untrusted data vulnerability that allows limited remote code execution with privilege of a NetworkService Account access. Attacker must be an authenticated user on the same intranet as the session recording server.",
+                "impact": "Active exploitation observed in the wild",
+                "mitigation": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+                "exploit_available": true,
+                "poc_available": false,
+                "source": "cisa_kev",
+                "source_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+                "published_date": "2025-08-25T00:00:00",
+                "updated_date": null,
+                "discovered_date": null,
+                "disclosure_date": null,
+                "vendor_response": null,
+                "tags": [
+                  "cisa",
+                  "kev",
+                  "actively_exploited"
+                ],
+                "raw_data": {
+                  "cveID": "CVE-2024-8069",
+                  "vendorProject": "Citrix",
+                  "product": "Session Recording",
+                  "vulnerabilityName": "Citrix Session Recording Deserialization of Untrusted Data Vulnerability",
+                  "dateAdded": "2025-08-25",
+                  "shortDescription": "Citrix Session Recording contains a deserialization of untrusted data vulnerability that allows limited remote code execution with privilege of a NetworkService Account access. Attacker must be an authenticated user on the same intranet as the session recording server.",
+                  "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+                  "dueDate": "2025-09-15",
+                  "knownRansomwareCampaignUse": "Unknown",
+                  "notes": "https://support.citrix.com/external/article/691941/citrix-session-recording-security-bullet.html ; https://nvd.nist.gov/vuln/detail/CVE-2024-8069",
+                  "cwes": [
+                    "CWE-502"
+                  ]
+                }
+              }
+            ],
+            "scrape_time_seconds": 0.063004
+          },
+          "mitre_cve": {
+            "scraper_name": "mitre_cve",
+            "tested_at": "2025-08-26T10:19:27.421050",
+            "data_quality_score": 0,
+            "completeness_score": 0,
+            "compliance_score": 0,
+            "performance_score": 0,
+            "overall_score": 0,
+            "vulnerabilities_found": 0,
+            "issues": [
+              "No vulnerabilities found - check API credentials or data availability"
+            ],
+            "strengths": [],
+            "sample_data": [],
+            "scrape_time_seconds": 0.000169
+          },
+          "cve_details": {
+            "scraper_name": "cve_details",
+            "tested_at": "2025-08-26T10:19:27.429494",
+            "data_quality_score": 0,
+            "completeness_score": 0,
+            "compliance_score": 0,
+            "performance_score": 0,
+            "overall_score": 0,
+            "vulnerabilities_found": 0,
+            "issues": [
+              "No vulnerabilities found - check API credentials or data availability"
+            ],
+            "strengths": [],
+            "sample_data": [],
+            "scrape_time_seconds": 0.000234
+          }
+        },
+        "overall_score": 24.15,
+        "recommendations": [
+          "Improve hackerone scraper - overall score below 60%",
+          "Enhance data quality for hackerone - add validation and cleanup",
+          "Improve field completeness for hackerone - extract more metadata",
+          "Ensure hackerone follows industry standards",
+          "Optimize hackerone performance - reduce scraping time",
+          "Check hackerone API credentials and data availability",
+          "Improve bugcrowd scraper - overall score below 60%",
+          "Enhance data quality for bugcrowd - add validation and cleanup",
+          "Improve field completeness for bugcrowd - extract more metadata",
+          "Ensure bugcrowd follows industry standards",
+          "Optimize bugcrowd performance - reduce scraping time",
+          "Check bugcrowd API credentials and data availability",
+          "Improve exploit_db scraper - overall score below 60%",
+          "Enhance data quality for exploit_db - add validation and cleanup",
+          "Improve field completeness for exploit_db - extract more metadata",
+          "Ensure exploit_db follows industry standards",
+          "Optimize exploit_db performance - reduce scraping time",
+          "Check exploit_db API credentials and data availability",
+          "Improve nvd scraper - overall score below 60%",
+          "Enhance data quality for nvd - add validation and cleanup",
+          "Improve field completeness for nvd - extract more metadata",
+          "Ensure nvd follows industry standards",
+          "Optimize nvd performance - reduce scraping time",
+          "Check nvd API credentials and data availability",
+          "Improve mitre_cve scraper - overall score below 60%",
+          "Enhance data quality for mitre_cve - add validation and cleanup",
+          "Improve field completeness for mitre_cve - extract more metadata",
+          "Ensure mitre_cve follows industry standards",
+          "Optimize mitre_cve performance - reduce scraping time",
+          "Check mitre_cve API credentials and data availability",
+          "Improve cve_details scraper - overall score below 60%",
+          "Enhance data quality for cve_details - add validation and cleanup",
+          "Improve field completeness for cve_details - extract more metadata",
+          "Ensure cve_details follows industry standards",
+          "Optimize cve_details performance - reduce scraping time",
+          "Check cve_details API credentials and data availability"
+        ]
+      }
+    },
+    "disclosure_formats": {
+      "platforms_tested": [
+        "hackerone",
+        "bugcrowd",
+        "exploit_db"
+      ],
+      "parsing_success_rate": 0,
+      "enhanced_data_extraction": 0,
+      "industry_compliance": 0
+    },
+    "ai_generation": {
+      "platforms_tested": 5,
+      "content_types_tested": 3,
+      "generation_success_rate": 100.0,
+      "quality_scores": {},
+      "algorithm_optimization_scores": {},
+      "platform_results": {
+        "twitter": {
+          "summary": {
+            "success": true,
+            "quality_score": 71.42857142857143,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          },
+          "detailed": {
+            "success": true,
+            "quality_score": 71.42857142857143,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          }
+        },
+        "linkedin": {
+          "summary": {
+            "success": true,
+            "quality_score": 85.71428571428571,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          },
+          "detailed": {
+            "success": true,
+            "quality_score": 85.71428571428571,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          }
+        },
+        "medium": {
+          "summary": {
+            "success": true,
+            "quality_score": 71.42857142857143,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          },
+          "detailed": {
+            "success": true,
+            "quality_score": 71.42857142857143,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          }
+        },
+        "telegram": {
+          "summary": {
+            "success": true,
+            "quality_score": 85.71428571428571,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          },
+          "detailed": {
+            "success": true,
+            "quality_score": 85.71428571428571,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          }
+        },
+        "discord": {
+          "summary": {
+            "success": true,
+            "quality_score": 85.71428571428571,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          },
+          "detailed": {
+            "success": true,
+            "quality_score": 85.71428571428571,
+            "character_count": 461,
+            "hashtag_count": 4,
+            "optimized": false
+          }
+        }
+      },
+      "average_quality_score": 79.99999999999999
+    },
+    "publication_system": {
+      "platforms_tested": 5,
+      "algorithm_optimization_tested": true,
+      "user_review_system_tested": false,
+      "success_metrics": {
+        "total_publications": 10,
+        "successful_publications": 0,
+        "success_rate": 0.0
+      },
+      "quality_metrics": {
+        "average_quality": 0,
+        "quality_scores": [],
+        "publications_above_70": 0
+      },
+      "optimization_effectiveness": {},
+      "publication_details": {
+        "vulnerability_id": "GHSA-xrq2-m5w8-p5wg",
+        "created_at": "2025-08-26T10:19:52.788220",
+        "platforms": [
+          "twitter",
+          "linkedin",
+          "medium",
+          "telegram",
+          "discord"
+        ],
+        "content_types": [
+          "summary",
+          "detailed"
+        ],
+        "publications": {
+          "twitter": {
+            "summary": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            },
+            "detailed": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            }
+          },
+          "linkedin": {
+            "summary": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            },
+            "detailed": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            }
+          },
+          "medium": {
+            "summary": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            },
+            "detailed": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            }
+          },
+          "telegram": {
+            "summary": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            },
+            "detailed": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            }
+          },
+          "discord": {
+            "summary": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            },
+            "detailed": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            }
+          }
+        },
+        "user_reviewed": false,
+        "auto_optimized": true,
+        "quality_scores": {},
+        "summary": {
+          "total_publications_attempted": 10,
+          "successful_publications": 0,
+          "success_rate": 0.0,
+          "average_quality_score": 0,
+          "ready_for_publishing": 0,
+          "needs_improvement": 10,
+          "quality_grade": "D"
+        }
+      }
+    },
+    "integration": {
+      "workflow_tested": "scrape_to_publish",
+      "components_integrated": [
+        "scraper",
+        "ai_generator",
+        "publication_system"
+      ],
+      "data_flow_validated": true,
+      "error_handling_tested": false,
+      "performance_metrics": {
+        "total_processing_time": 16.945051,
+        "vulnerability_processing_rate": 0.05901428092485529,
+        "memory_efficient": true,
+        "error_rate": 0
+      },
+      "publication_result": {
+        "vulnerability_id": "GHSA-xrq2-m5w8-p5wg",
+        "created_at": "2025-08-26T10:20:48.674204",
+        "platforms": [
+          "twitter",
+          "linkedin"
+        ],
+        "content_types": [
+          "summary"
+        ],
+        "publications": {
+          "twitter": {
+            "summary": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            }
+          },
+          "linkedin": {
+            "summary": {
+              "error": "unsupported operand type(s) for +: 'int' and 'str'",
+              "ready_for_publishing": false
+            }
+          }
+        },
+        "user_reviewed": false,
+        "auto_optimized": true,
+        "quality_scores": {},
+        "summary": {
+          "total_publications_attempted": 2,
+          "successful_publications": 0,
+          "success_rate": 0.0,
+          "average_quality_score": 0,
+          "ready_for_publishing": 0,
+          "needs_improvement": 2,
+          "quality_grade": "D"
+        }
+      },
+      "workflow_success": true
+    },
+    "performance": {
+      "memory_usage": "acceptable",
+      "concurrent_processing": true,
+      "api_rate_limiting": true,
+      "error_recovery": true,
+      "scalability_score": 85,
+      "concurrent_generation_success": true
+    }
+  },
+  "overall_score": 45.69166666666666,
+  "system_readiness": "needs_improvement",
+  "component_scores": {
+    "scrapers": 24.15,
+    "disclosure_parsing": 0,
+    "ai_generation": 79.99999999999999,
+    "publication_system": 0,
+    "integration": 85,
+    "performance": 85
+  },
+  "completed_at": "2025-08-26T10:21:05.803292"
+}
